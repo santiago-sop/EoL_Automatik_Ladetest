@@ -1,0 +1,17 @@
+# Changelog
+
+All notable changes to this project will be documented in this file
+
+## [0.0.0] - 10.01.2025
+
+## Changed
+- First version of the program to do the necessary charged tests automatically.
+- Programming language used: C# .NET Framework 4.7.2
+- The program is able to run the necessary cherged test for the EoL process. For this its needed that the program have the next capability:
+	- Connect with the CDS.
+	- Read the avaiable sinks.
+	- Run Test Cases.
+	- Manage the CDS's process.
+	- Send messages to the user.
+- The program is developed to be used in the EoL Laboratory, where the is four test's fields. Each have a CDS with a static IP Address, whych can be changed by user. 
+- The program is able to work with 300kW and 400kW Charger.
