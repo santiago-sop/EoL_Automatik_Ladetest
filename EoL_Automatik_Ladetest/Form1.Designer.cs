@@ -50,12 +50,12 @@
             this.tBNachrichten = new System.Windows.Forms.TextBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.gbCDS = new System.Windows.Forms.GroupBox();
+            this.lblResult = new System.Windows.Forms.Label();
             this.lblCDSstatus = new System.Windows.Forms.Label();
             this.btnCDSReset = new System.Windows.Forms.Button();
             this.btnCDSTrennen = new System.Windows.Forms.Button();
             this.btnCDSVerbinden = new System.Windows.Forms.Button();
             this.lblStatusVerbindung = new System.Windows.Forms.Label();
-            this.lblResult = new System.Windows.Forms.Label();
             this.gbEinstellungen.SuspendLayout();
             this.gbTests.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -147,9 +147,9 @@
             this.checkBoxIsoTestRechts.Location = new System.Drawing.Point(25, 180);
             this.checkBoxIsoTestRechts.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxIsoTestRechts.Name = "checkBoxIsoTestRechts";
-            this.checkBoxIsoTestRechts.Size = new System.Drawing.Size(210, 20);
+            this.checkBoxIsoTestRechts.Size = new System.Drawing.Size(199, 25);
             this.checkBoxIsoTestRechts.TabIndex = 5;
-            this.checkBoxIsoTestRechts.Text = "Isolationsprüfung Rechte Seite";
+            this.checkBoxIsoTestRechts.Text = "DC2 Isolationsprüfung";
             this.checkBoxIsoTestRechts.UseVisualStyleBackColor = true;
             // 
             // checkBoxTestRechts
@@ -169,9 +169,9 @@
             this.checkBoxIsoTestLinks.Location = new System.Drawing.Point(25, 123);
             this.checkBoxIsoTestLinks.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxIsoTestLinks.Name = "checkBoxIsoTestLinks";
-            this.checkBoxIsoTestLinks.Size = new System.Drawing.Size(167, 20);
+            this.checkBoxIsoTestLinks.Size = new System.Drawing.Size(199, 25);
             this.checkBoxIsoTestLinks.TabIndex = 3;
-            this.checkBoxIsoTestLinks.Text = "DC1 Isolationsprüfunge";
+            this.checkBoxIsoTestLinks.Text = "DC1 Isolationsprüfung";
             this.checkBoxIsoTestLinks.UseVisualStyleBackColor = true;
             // 
             // checkBoxTestLinks
@@ -225,7 +225,7 @@
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(826, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1033, 38);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -237,7 +237,7 @@
             this.pruffeld3ToolStripMenuItem,
             this.pruffeld4ToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(160, 24);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(160, 34);
             this.toolStripMenuItem1.Text = "Prüffelder IP Adresse";
             // 
             // pruffeld1ToolStripMenuItem
@@ -304,6 +304,15 @@
             this.gbCDS.TabStop = false;
             this.gbCDS.Text = "CDS";
             // 
+            // lblResult
+            // 
+            this.lblResult.AutoSize = true;
+            this.lblResult.Location = new System.Drawing.Point(7, 151);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(107, 16);
+            this.lblResult.TabIndex = 14;
+            this.lblResult.Text = "TestCase Result";
+            // 
             // lblCDSstatus
             // 
             this.lblCDSstatus.AutoSize = true;
@@ -351,15 +360,6 @@
             this.lblStatusVerbindung.Size = new System.Drawing.Size(118, 16);
             this.lblStatusVerbindung.TabIndex = 0;
             this.lblStatusVerbindung.Text = "Verbindungsstatus";
-            // 
-            // lblResult
-            // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(7, 151);
-            this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(134, 20);
-            this.lblResult.TabIndex = 14;
-            this.lblResult.Text = "TestCase Result";
             // 
             // Form1
             // 
