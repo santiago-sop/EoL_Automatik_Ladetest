@@ -689,11 +689,13 @@ namespace EoL_Automatik_Ladetest
                                     {
                                         tests[2].testBestanden = true;
                                         TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestanden);
+                                        
                                     }
                                     else
                                     {
                                         tests[2].testBestanden = false;
                                         TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestandenNicht);
+                                        
                                     }
                                 }
                                 
@@ -713,6 +715,7 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                         }
                         break;
+                    //DC1 Isolationsprüfung
                     case 4:
                         //DC1 Isotest
                         if (tests[3].testErfordelich)
@@ -722,21 +725,32 @@ namespace EoL_Automatik_Ladetest
                                 if (tests[3].testGearbeitet == 0)
                                 {
                                     TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_starten);
-                                    antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                    if (!tests[2].testErfordelich)
+                                    {
+                                        antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
-                                    if (antworte == DialogResult.OK)
+                                        if (antworte == DialogResult.OK)
+                                        {
+                                            tests[3].testGearbeitet++;
+                                            //prozess++;
+                                            TempWeiter.Start();
+                                            Console.WriteLine("24 ACTIVE EL TEMP");
+                                            tests[3].testBestanden = true;
+                                        }
+                                        else
+                                        {
+                                            TexteHinzufuegen(Resources.m_testStopt);
+                                            endProgram();
+                                            Console.WriteLine("07 LLAME A PARAR EL PROGRAMA");
+                                        }
+                                    }
+                                    else
                                     {
                                         tests[3].testGearbeitet++;
                                         //prozess++;
                                         TempWeiter.Start();
-                                        Console.WriteLine("21 ACTIVE EL TEMP");
+                                        Console.WriteLine("25 ACTIVE EL TEMP");
                                         tests[3].testBestanden = true;
-                                    }
-                                    else
-                                    {
-                                        TexteHinzufuegen(Resources.m_testStopt);
-                                        endProgram();
-                                        Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
                                     }
                                 }
                                 else if (tests[3].testGearbeitet == 1)
@@ -762,12 +776,12 @@ namespace EoL_Automatik_Ladetest
                                         _testCaseHandler.ResetErrors();
                                         _testCaseHandler.SendCdsSourceSinkRequest();
                                         TempWeiter.Start();
-                                        Console.WriteLine("22 ACTIVE EL TEMP");
+                                        Console.WriteLine("26 ACTIVE EL TEMP");
                                     }
                                     else
                                     {
                                         TempWeiter.Start();
-                                        Console.WriteLine("23 ACTIVE EL TEMP");
+                                        Console.WriteLine("27 ACTIVE EL TEMP");
                                     }
                                 }
                                 else
@@ -804,6 +818,7 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                         }
                         break;
+                    //DC2 Ladetest
                     case 5:
                         //DC2 Ladetest
                         if (tests[4].testErfordelich)
@@ -820,7 +835,7 @@ namespace EoL_Automatik_Ladetest
                                         tests[4].testGearbeitet++;
                                         //prozess++;
                                         TempWeiter.Start();
-                                        Console.WriteLine("21 ACTIVE EL TEMP");
+                                        Console.WriteLine("28 ACTIVE EL TEMP");
                                         tests[4].testBestanden = true;
                                     }
                                     else
@@ -855,12 +870,12 @@ namespace EoL_Automatik_Ladetest
                                         _testCaseHandler.ResetErrors();
                                         _testCaseHandler.SendCdsSourceSinkRequest();
                                         TempWeiter.Start();
-                                        Console.WriteLine("22 ACTIVE EL TEMP");
+                                        Console.WriteLine("29 ACTIVE EL TEMP");
                                     }
                                     else
                                     {
                                         TempWeiter.Start();
-                                        Console.WriteLine("23 ACTIVE EL TEMP");
+                                        Console.WriteLine("30 ACTIVE EL TEMP");
                                     }
 
                                     if (tests[4].testGearbeitet > 1)
@@ -912,8 +927,9 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                         }
                         break;
+                    //DC2 Isolationsprüfung
                     case 6:
-                        //DC1 Isotest
+                        //DC2 Isotest
                         if (tests[5].testErfordelich)
                         {
                             if (tests[5].testGearbeitet < 10)
@@ -921,22 +937,34 @@ namespace EoL_Automatik_Ladetest
                                 if (tests[5].testGearbeitet == 0)
                                 {
                                     TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_starten);
-                                    antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                    if (!tests[4].testErfordelich)
+                                    {
+                                        antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                        if (antworte == DialogResult.OK)
+                                        {
+                                            tests[5].testGearbeitet++;
+                                            //prozess++;
+                                            TempWeiter.Start();
+                                            Console.WriteLine("31 ACTIVE EL TEMP");
+                                            tests[5].testBestanden = true;
+                                        }
+                                        else
+                                        {
+                                            TexteHinzufuegen(Resources.m_testStopt);
+                                            endProgram();
+                                            Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
+                                        }
 
-                                    if (antworte == DialogResult.OK)
+                                    }
+                                    else
                                     {
                                         tests[5].testGearbeitet++;
                                         //prozess++;
                                         TempWeiter.Start();
-                                        Console.WriteLine("21 ACTIVE EL TEMP");
+                                        Console.WriteLine("32 ACTIVE EL TEMP");
                                         tests[5].testBestanden = true;
                                     }
-                                    else
-                                    {
-                                        TexteHinzufuegen(Resources.m_testStopt);
-                                        endProgram();
-                                        Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                    }
+                                    
                                 }
                                 else if (tests[5].testGearbeitet == 1)
                                 {
@@ -961,12 +989,12 @@ namespace EoL_Automatik_Ladetest
                                         _testCaseHandler.ResetErrors();
                                         _testCaseHandler.SendCdsSourceSinkRequest();
                                         TempWeiter.Start();
-                                        Console.WriteLine("22 ACTIVE EL TEMP");
+                                        Console.WriteLine("33 ACTIVE EL TEMP");
                                     }
                                     else
                                     {
                                         TempWeiter.Start();
-                                        Console.WriteLine("23 ACTIVE EL TEMP");
+                                        Console.WriteLine("34 ACTIVE EL TEMP");
                                     }
                                 }
                                 else

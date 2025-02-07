@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file
 
+##[0.0.1] - 07.02.2025
+
+## Changed/Features/Notes
+- The emergency stop test, door contact test, DC1 and DC2 insulation tests, and charging tests are working well. However, the charging tests are divided into 3 separate tests. It would be useful to create the possibility to perform all tests in a single run.
+- There are still some bugs to be fixed. These may originate from issues in the CDS system or an incorrect separation in an earlier process step. This still needs to be investigated further.
+- There are many notes that still need to be reviewed.
+- Some functions are still missing to further optimize and improve the code.
+- Some spelling errors have already been corrected.
+- The app is still in a raw state, but it is basically functional.
+
 ## [0.0.0] - 10.01.2025
 
 ## Changed

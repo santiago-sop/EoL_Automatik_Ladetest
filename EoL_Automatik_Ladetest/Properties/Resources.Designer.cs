@@ -205,7 +205,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Wenn der Charger wieder grün ist, clicken Sie bitte en JA ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wenn der Charger wieder grün ist, clicken Sie bitte auf JA ähnelt.
         /// </summary>
         internal static string m_f_chargerGruen {
             get {
