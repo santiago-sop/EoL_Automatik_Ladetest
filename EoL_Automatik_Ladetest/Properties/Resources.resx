@@ -201,4 +201,13 @@
   <data name="DC2" xml:space="preserve">
     <value>DC2</value>
   </data>
+  <data name="m_SpeichernAlsPDF" xml:space="preserve">
+    <value>Speicher PDF als</value>
+  </data>
+  <data name="bericht" xml:space="preserve">
+    <value>Bericht</value>
+  </data>
+  <data name="ergebnis" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
 </root>

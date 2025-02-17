@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
-using System.Resources;
 using System.Windows.Forms;
 using System.Configuration;
-using CdsTestCaseLibrary.Models.Project;
 using Configuration = System.Configuration.Configuration;
 using Microsoft.VisualBasic;
 using CdsTestCaseLibrary;
@@ -19,6 +11,10 @@ using Timer = System.Timers.Timer;
 using EoL_Automatik_Ladetest.Properties;
 using CdsTestCaseLibrary.Enums;
 using CdsTestCaseLibrary.Models;
+using Microsoft.Office.Interop.Word;
+using System.IO;
+using Application = Microsoft.Office.Interop.Word.Application;
+//using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
 {
@@ -37,10 +33,17 @@ namespace EoL_Automatik_Ladetest
         private string testCaseResult;
         private string pruefFeld;
         private int CDSverloren = 0;
+        private string serie_number_charger;
+        private string serie_number_CDS;
+        private string norm;
 
         public Form1()
         {
             InitializeComponent();
+
+            serie_number_CDS = "CDS";
+            serie_number_charger = "17000xxxx";
+            norm = "DINxxxx";
             
             // -- Struct TESTS --
             tests[0] = new Test(Resources.notAusTest, false);
@@ -1163,6 +1166,241 @@ namespace EoL_Automatik_Ladetest
             _testCaseHandler.StopTest();
             _testCaseHandler.Disconnect();
             _testCaseHandler.Dispose();
+        }
+
+        private class TabelleDatei
+        {
+            public string Titel { get; set; }
+            public List<List<string>> Dateien { get; set; }
+
+            public TabelleDatei(string titel, List<List<string>> dateien)
+            {
+                Titel = titel;
+                Dateien = dateien;
+            }
+        }
+
+        private void PDFerstellen()
+        {
+
+            // Mostrar el cuadro de dialogo para guardar el archivo
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PDF files (*.pdf)|*.pdf",
+                Title = Resources.m_SpeichernAlsPDF,
+                FileName = Resources.bericht + "_" + serie_number_charger + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
+            };
+            //string pdfFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Reporte.pdf";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string pdfFilePath = saveFileDialog.FileName;
+                // Ruta del documento de Word
+                string wordFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Bericht.docx";
+
+                // Crear una instancia de la aplicación de Word
+                Application wordApp = new Application();
+                Document wordDoc = null;
+
+                try
+                {
+                    // Abrir el documento de Word
+                    wordDoc = wordApp.Documents.Open(wordFilePath);
+
+                    // Limpiar el documento de párrafos vacíos antes de agregar contenido nuevo
+                    //LimpiarParrafosVacios(wordDoc);
+
+                    // Rellenar los campos en el documento de Word
+                    foreach (Field field in wordDoc.Fields)
+                    {
+                        if (field.Code.Text.Contains("SERIE_NUMBER_CHARGER"))
+                        {
+                            field.Result.Text = serie_number_charger; // Número de serie dinámico
+                        }
+                        else if (field.Code.Text.Contains("TOTAL_RESULT"))
+                        {
+                            field.Result.Text = "Bestanden";    // Resultado del Test
+                        }
+                        else if (field.Code.Text.Contains("DATE"))
+                        {
+                            field.Result.Text = DateTime.Now.ToString("dd/MM/yyyy"); // Fecha actual
+                        }
+                        else if (field.Code.Text.Contains("SERIE_NUMBER_CDS"))
+                        {
+                            field.Result.Text = serie_number_CDS; // Numero de serie de CDS
+                        }
+                        else if (field.Code.Text.Contains("SINK"))
+                        {
+                            field.Result.Text = "SINK"; // Fuente
+                        }
+                        else if (field.Code.Text.Contains("MAX_DC_POWER"))
+                        {
+                            field.Result.Text = "10kw"; // Maxima potencia
+                        }
+                        else if (field.Code.Text.Contains("NORM"))
+                        {
+                            field.Result.Text = norm; // Norma utilizada
+                        }
+                    }
+                    // Insertar un párrafo vacío antes de agregar el primer título de la tabla
+                    InsertarParrafoVacio(wordDoc);
+
+                    foreach (Test test in tests)
+                    {
+                        if (test.testErfordelich)
+                        {
+                            if (test.name.Contains(Resources.tuerKontaktTest) || test.name.Contains(Resources.notAusTest))
+                            {
+                                var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
+                                {
+                                    new List<string> { Resources.ergebnis, test.testBestanden.ToString()}
+                                });
+                                AgregarTabla(wordDoc, tabelleDatei);
+                            }
+                            else if (test.name.Contains("Ladetest"))
+                            {
+                                var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
+                                {
+                                    new List<string> { "Power", "8,1kw" },
+                                    new List<string> { "Current", "18A" },
+                                    new List<string> { "Voltage", "450V" },
+                                    new List<string> { "Duration", "1m" },
+                                    new List<string> { "Quantity", "3" },
+                                    new List<string> { "Result", test.testBestanden.ToString() },
+                                    new List<string> { "Isolationtest", "Aprobed" }
+                                });
+                                AgregarTabla(wordDoc, tabelleDatei);
+                            }
+
+                        }
+                    }
+                    // Guardar el documento de Word como PDF
+                    wordDoc.SaveAs2(pdfFilePath, WdSaveFormat.wdFormatPDF);
+
+                    // Eliminar las tablas del documento de Word para mantenerlo limpio
+                    foreach (Table table in wordDoc.Tables)
+                    {
+                        table.Delete();
+                    }
+                    // Eliminar los títulos de las tablas
+                    //foreach (Paragraph paragraph in wordDoc.Paragraphs)
+                    for (int i = wordDoc.Paragraphs.Count; i > 0; i--)
+                    {
+                        Paragraph paragraph = wordDoc.Paragraphs[i];
+                        //if (paragraph.Range.Text.Contains(Resources.notAusTest) || paragraph.Range.Text.Contains(Resources.tuerKontaktTest) || paragraph.Range.Text.Contains(Resources.DC1LadeTest) || paragraph.Range.Text.Contains(Resources.DC2LadeTest))
+                        if (paragraph.Range.Text.Contains(Resources.notAusTest) || paragraph.Range.Text.Contains(Resources.tuerKontaktTest) || paragraph.Range.Text.Contains(Resources.DC1LadeTest) || paragraph.Range.Text.Contains(Resources.DC2LadeTest))
+                        {
+                            //paragraph.Range.Delete();
+                            if (i <= wordDoc.Paragraphs.Count)
+                            {
+                                wordDoc.Paragraphs[i].Range.Delete();
+                            }
+                        }
+                    }
+                    // Eliminar los párrafos vacíos
+                    foreach (Paragraph paragraph in wordDoc.Paragraphs)
+                    {
+                        if (string.IsNullOrWhiteSpace(paragraph.Range.Text))
+                        {
+                            paragraph.Range.Delete();    
+                        }
+                    }
+                    //for (int i = wordDoc.Paragraphs.Count; i > 1; i--)
+                    //{
+                        //Paragraph paragraph = wordDoc.Paragraphs[i];
+                        //if (string.IsNullOrWhiteSpace(paragraph.Range.Text))
+                        //{
+                            //paragraph.Range.Delete();
+                        //}
+                    //}
+                }
+
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally
+                {
+                    // Cerrar el documento y la aplicación de Word
+                    wordDoc.Close();
+                    wordApp.Quit();
+                }
+            }
+        }
+
+        private void LimpiarParrafosVacios(Document wordDoc)
+        {
+            // Eliminar los párrafos vacíos antes de agregar contenido nuevo
+            for (int i = wordDoc.Paragraphs.Count; i > 1; i--)
+            {
+                Paragraph paragraph = wordDoc.Paragraphs[i];
+                if (string.IsNullOrWhiteSpace(paragraph.Range.Text))
+                {
+                    paragraph.Range.Delete();
+                }
+            }
+        }
+
+        private void InsertarParrafoVacio(Document wordDoc)
+        {
+            // Mover el cursor al final del documento
+            object endOfDoc = "\\endofdoc";
+            object missing = Type.Missing;
+            Range wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
+
+            // Añadir un párrafo vacío
+            Paragraph emptyParagraph = wordDoc.Content.Paragraphs.Add(ref missing);
+            emptyParagraph.Range.InsertParagraphAfter();
+        }
+
+        private void AgregarTabla(Document wordDoc, TabelleDatei tablaDatos)
+        {
+            // Mover el cursor al final del documento
+            object endOfDoc = "\\endofdoc";
+            object missing = Type.Missing;
+            Range wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
+
+            // Añadir título para la tabla
+            Paragraph title = wordDoc.Content.Paragraphs.Add(ref missing);
+            title.Range.Text = tablaDatos.Titel;
+            title.Range.Font.Bold = 1;
+            title.Range.InsertParagraphAfter();
+
+            // Mover el cursor al final del documento nuevamente
+            wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
+
+            // Crear la tabla
+            int numRows = tablaDatos.Dateien.Count;
+            int numCols = tablaDatos.Dateien[0].Count;
+            Table table = wordDoc.Tables.Add(wordRange, numRows, numCols);
+            table.Borders.Enable = 1;
+
+            // Rellenar la tabla con datos
+            for (int i = 0; i < numRows; i++)
+            {
+                for (int j = 0; j < numCols; j++)
+                {
+                    table.Cell(i + 1, j + 1).Range.Text = tablaDatos.Dateien[i][j];
+                }
+            }
+
+            // Añadir un salto de línea después de la tabla
+            Paragraph afterTable = wordDoc.Content.Paragraphs.Add(ref missing);
+            afterTable.Range.InsertParagraphAfter();
+        }
+
+        private void btnPDF_Click(object sender, EventArgs e)
+        {
+            PDFerstellen();
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                tests[i].testErfordelich = true;
+                tests[i].testBestanden = true;
+            }
         }
     }
 }

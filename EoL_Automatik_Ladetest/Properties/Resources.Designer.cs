@@ -79,6 +79,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bericht ähnelt.
+        /// </summary>
+        internal static string bericht {
+            get {
+                return ResourceManager.GetString("bericht", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die DC1 ähnelt.
         /// </summary>
         internal static string DC1 {
@@ -129,6 +138,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         internal static string DC2LadeTest {
             get {
                 return ResourceManager.GetString("DC2LadeTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ergebnis ähnelt.
+        /// </summary>
+        internal static string ergebnis {
+            get {
+                return ResourceManager.GetString("ergebnis", resourceCulture);
             }
         }
         
@@ -255,6 +273,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         internal static string m_NotausNormailizieren {
             get {
                 return ResourceManager.GetString("m_NotausNormailizieren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Speicher PDF als ähnelt.
+        /// </summary>
+        internal static string m_SpeichernAlsPDF {
+            get {
+                return ResourceManager.GetString("m_SpeichernAlsPDF", resourceCulture);
             }
         }
         

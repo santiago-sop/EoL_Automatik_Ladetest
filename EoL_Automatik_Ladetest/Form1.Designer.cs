@@ -56,6 +56,10 @@
             this.btnCDSTrennen = new System.Windows.Forms.Button();
             this.btnCDSVerbinden = new System.Windows.Forms.Button();
             this.lblStatusVerbindung = new System.Windows.Forms.Label();
+            this.btnPDF = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tbFA = new System.Windows.Forms.TextBox();
+            this.lblFA = new System.Windows.Forms.Label();
             this.gbEinstellungen.SuspendLayout();
             this.gbTests.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -70,7 +74,7 @@
             "PF2",
             "PF3",
             "PF4"});
-            this.cbPruffeld.Location = new System.Drawing.Point(505, 71);
+            this.cbPruffeld.Location = new System.Drawing.Point(505, 76);
             this.cbPruffeld.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbPruffeld.Name = "cbPruffeld";
             this.cbPruffeld.Size = new System.Drawing.Size(121, 24);
@@ -80,7 +84,7 @@
             // lblPruffeld
             // 
             this.lblPruffeld.AutoSize = true;
-            this.lblPruffeld.Location = new System.Drawing.Point(392, 71);
+            this.lblPruffeld.Location = new System.Drawing.Point(392, 76);
             this.lblPruffeld.Name = "lblPruffeld";
             this.lblPruffeld.Size = new System.Drawing.Size(97, 16);
             this.lblPruffeld.TabIndex = 1;
@@ -90,7 +94,7 @@
             // 
             this.gbEinstellungen.Controls.Add(this.checkBoxNotaus);
             this.gbEinstellungen.Controls.Add(this.checkBoxERK);
-            this.gbEinstellungen.Location = new System.Drawing.Point(98, 71);
+            this.gbEinstellungen.Location = new System.Drawing.Point(98, 76);
             this.gbEinstellungen.Margin = new System.Windows.Forms.Padding(4);
             this.gbEinstellungen.Name = "gbEinstellungen";
             this.gbEinstellungen.Padding = new System.Windows.Forms.Padding(4);
@@ -132,7 +136,7 @@
             this.gbTests.Controls.Add(this.checkBoxTestLinks);
             this.gbTests.Controls.Add(this.checkBoxTurkontaktTest);
             this.gbTests.Controls.Add(this.checkBoxNotausTest);
-            this.gbTests.Location = new System.Drawing.Point(98, 182);
+            this.gbTests.Location = new System.Drawing.Point(98, 187);
             this.gbTests.Margin = new System.Windows.Forms.Padding(4);
             this.gbTests.Name = "gbTests";
             this.gbTests.Padding = new System.Windows.Forms.Padding(4);
@@ -147,7 +151,7 @@
             this.checkBoxIsoTestRechts.Location = new System.Drawing.Point(25, 180);
             this.checkBoxIsoTestRechts.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxIsoTestRechts.Name = "checkBoxIsoTestRechts";
-            this.checkBoxIsoTestRechts.Size = new System.Drawing.Size(199, 25);
+            this.checkBoxIsoTestRechts.Size = new System.Drawing.Size(159, 20);
             this.checkBoxIsoTestRechts.TabIndex = 5;
             this.checkBoxIsoTestRechts.Text = "DC2 Isolationsprüfung";
             this.checkBoxIsoTestRechts.UseVisualStyleBackColor = true;
@@ -169,7 +173,7 @@
             this.checkBoxIsoTestLinks.Location = new System.Drawing.Point(25, 123);
             this.checkBoxIsoTestLinks.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxIsoTestLinks.Name = "checkBoxIsoTestLinks";
-            this.checkBoxIsoTestLinks.Size = new System.Drawing.Size(199, 25);
+            this.checkBoxIsoTestLinks.Size = new System.Drawing.Size(159, 20);
             this.checkBoxIsoTestLinks.TabIndex = 3;
             this.checkBoxIsoTestLinks.Text = "DC1 Isolationsprüfung";
             this.checkBoxIsoTestLinks.UseVisualStyleBackColor = true;
@@ -209,7 +213,7 @@
             // 
             // btnStarten
             // 
-            this.btnStarten.Location = new System.Drawing.Point(98, 432);
+            this.btnStarten.Location = new System.Drawing.Point(98, 437);
             this.btnStarten.Margin = new System.Windows.Forms.Padding(4);
             this.btnStarten.Name = "btnStarten";
             this.btnStarten.Size = new System.Drawing.Size(100, 28);
@@ -270,7 +274,7 @@
             // 
             // tBNachrichten
             // 
-            this.tBNachrichten.Location = new System.Drawing.Point(98, 477);
+            this.tBNachrichten.Location = new System.Drawing.Point(98, 482);
             this.tBNachrichten.Multiline = true;
             this.tBNachrichten.Name = "tBNachrichten";
             this.tBNachrichten.ReadOnly = true;
@@ -280,7 +284,7 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(436, 432);
+            this.btnStop.Location = new System.Drawing.Point(436, 437);
             this.btnStop.Margin = new System.Windows.Forms.Padding(4);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(100, 28);
@@ -297,7 +301,7 @@
             this.gbCDS.Controls.Add(this.btnCDSTrennen);
             this.gbCDS.Controls.Add(this.btnCDSVerbinden);
             this.gbCDS.Controls.Add(this.lblStatusVerbindung);
-            this.gbCDS.Location = new System.Drawing.Point(426, 110);
+            this.gbCDS.Location = new System.Drawing.Point(426, 115);
             this.gbCDS.Name = "gbCDS";
             this.gbCDS.Size = new System.Drawing.Size(200, 187);
             this.gbCDS.TabIndex = 9;
@@ -361,11 +365,51 @@
             this.lblStatusVerbindung.TabIndex = 0;
             this.lblStatusVerbindung.Text = "Verbindungsstatus";
             // 
+            // btnPDF
+            // 
+            this.btnPDF.Location = new System.Drawing.Point(98, 765);
+            this.btnPDF.Name = "btnPDF";
+            this.btnPDF.Size = new System.Drawing.Size(114, 23);
+            this.btnPDF.TabIndex = 10;
+            this.btnPDF.Text = "Generar PDF";
+            this.btnPDF.UseVisualStyleBackColor = true;
+            this.btnPDF.Click += new System.EventHandler(this.btnPDF_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(426, 765);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(114, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Generar Datos";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // tbFA
+            // 
+            this.tbFA.Location = new System.Drawing.Point(209, 31);
+            this.tbFA.Name = "tbFA";
+            this.tbFA.Size = new System.Drawing.Size(100, 22);
+            this.tbFA.TabIndex = 12;
+            // 
+            // lblFA
+            // 
+            this.lblFA.AutoSize = true;
+            this.lblFA.Location = new System.Drawing.Point(95, 37);
+            this.lblFA.Name = "lblFA";
+            this.lblFA.Size = new System.Drawing.Size(30, 20);
+            this.lblFA.TabIndex = 13;
+            this.lblFA.Text = "FA";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(826, 835);
+            this.Controls.Add(this.lblFA);
+            this.Controls.Add(this.tbFA);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnPDF);
             this.Controls.Add(this.gbCDS);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.tBNachrichten);
@@ -424,6 +468,10 @@
         private System.Windows.Forms.Label lblStatusVerbindung;
         private System.Windows.Forms.Label lblCDSstatus;
         private System.Windows.Forms.Label lblResult;
+        private System.Windows.Forms.Button btnPDF;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox tbFA;
+        private System.Windows.Forms.Label lblFA;
     }
 }
 
