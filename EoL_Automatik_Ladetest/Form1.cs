@@ -1242,7 +1242,7 @@ namespace EoL_Automatik_Ladetest
                         }
                     }
                     // Insertar un párrafo vacío antes de agregar el primer título de la tabla
-                    InsertarParrafoVacio(wordDoc);
+                    LeerenAbsatzEinfuegen(wordDoc);
 
                     foreach (Test test in tests)
                     {
@@ -1254,7 +1254,7 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     new List<string> { Resources.ergebnis, test.testBestanden.ToString()}
                                 });
-                                AgregarTabla(wordDoc, tabelleDatei);
+                                TabelleHinzufuegen(wordDoc, tabelleDatei);
                             }
                             else if (test.name.Contains("Ladetest"))
                             {
@@ -1268,7 +1268,7 @@ namespace EoL_Automatik_Ladetest
                                     new List<string> { "Result", test.testBestanden.ToString() },
                                     new List<string> { "Isolationtest", "Aprobed" }
                                 });
-                                AgregarTabla(wordDoc, tabelleDatei);
+                                TabelleHinzufuegen(wordDoc, tabelleDatei);
                             }
 
                         }
@@ -1327,20 +1327,7 @@ namespace EoL_Automatik_Ladetest
             }
         }
 
-        private void LimpiarParrafosVacios(Document wordDoc)
-        {
-            // Eliminar los párrafos vacíos antes de agregar contenido nuevo
-            for (int i = wordDoc.Paragraphs.Count; i > 1; i--)
-            {
-                Paragraph paragraph = wordDoc.Paragraphs[i];
-                if (string.IsNullOrWhiteSpace(paragraph.Range.Text))
-                {
-                    paragraph.Range.Delete();
-                }
-            }
-        }
-
-        private void InsertarParrafoVacio(Document wordDoc)
+        private void LeerenAbsatzEinfuegen(Document wordDoc)
         {
             // Mover el cursor al final del documento
             object endOfDoc = "\\endofdoc";
@@ -1352,7 +1339,7 @@ namespace EoL_Automatik_Ladetest
             emptyParagraph.Range.InsertParagraphAfter();
         }
 
-        private void AgregarTabla(Document wordDoc, TabelleDatei tablaDatos)
+        private void TabelleHinzufuegen(Document wordDoc, TabelleDatei tablaDatos)
         {
             // Mover el cursor al final del documento
             object endOfDoc = "\\endofdoc";
