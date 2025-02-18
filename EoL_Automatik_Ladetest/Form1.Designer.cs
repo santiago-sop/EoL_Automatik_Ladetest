@@ -229,7 +229,7 @@
             this.toolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1033, 38);
+            this.menuStrip1.Size = new System.Drawing.Size(826, 28);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -241,7 +241,7 @@
             this.pruffeld3ToolStripMenuItem,
             this.pruffeld4ToolStripMenuItem});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(160, 34);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(160, 24);
             this.toolStripMenuItem1.Text = "Prüffelder IP Adresse";
             // 
             // pruffeld1ToolStripMenuItem
@@ -371,7 +371,7 @@
             this.btnPDF.Name = "btnPDF";
             this.btnPDF.Size = new System.Drawing.Size(114, 23);
             this.btnPDF.TabIndex = 10;
-            this.btnPDF.Text = "Generar PDF";
+            this.btnPDF.Text = "PDF Erstellen";
             this.btnPDF.UseVisualStyleBackColor = true;
             this.btnPDF.Click += new System.EventHandler(this.btnPDF_Click);
             // 
@@ -397,7 +397,7 @@
             this.lblFA.AutoSize = true;
             this.lblFA.Location = new System.Drawing.Point(95, 37);
             this.lblFA.Name = "lblFA";
-            this.lblFA.Size = new System.Drawing.Size(30, 20);
+            this.lblFA.Size = new System.Drawing.Size(24, 16);
             this.lblFA.TabIndex = 13;
             this.lblFA.Text = "FA";
             // 
