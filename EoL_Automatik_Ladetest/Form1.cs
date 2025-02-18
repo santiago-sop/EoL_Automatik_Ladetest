@@ -358,7 +358,9 @@ namespace EoL_Automatik_Ladetest
                             }
                             Charger.Sink = senke.Name;
                             Charger.MaxDCPower = senke.ParamValues[0].Name;
-                            TexteHinzufuegen("CDS S/N: " + Charger.CDS_SerialNumber + "\nCDS Fw Version: " + Charger.CDS_FwVersion + "\nMax DC Power: " + Charger.MaxDCPower);
+                            TexteHinzufuegen("CDS S/N: " + Charger.CDS_SerialNumber);
+                            TexteHinzufuegen("CDS Fw Version: " + Charger.CDS_FwVersion);
+                            TexteHinzufuegen("Max DC Power: " + Charger.MaxDCPower);
                             TempWeiter.Start();
                             Console.WriteLine("02 ACTIVE EL TEMP");
                         }
@@ -643,9 +645,9 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
                                     string projectName = pruefFeld;
-                                    if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
-                                    if (erk) projectName = projectName + "1m.cdpj";
-                                    else projectName = projectName + "3m.cdpj";
+                                    if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
+                                    if (erk) projectName = projectName + "Test1m.cdpj";
+                                    else projectName = projectName + "Test3m.cdpj";
                                     if (testStarten(projectName, Resources.DC1LadeTest))
                                     {
                                         Charger.tests[2].testGearbeitet = 1;
@@ -675,6 +677,7 @@ namespace EoL_Automatik_Ladetest
                                 if (Charger.tests[2].testBestanden) TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestandenNicht);
                                 prozess = 5;
+                                TempWeiter.Start();
                             }
                         }
                         else
@@ -900,14 +903,19 @@ namespace EoL_Automatik_Ladetest
                             if (Charger.tests[4].testGearbeitet == 0)
                             {
                                 //Iniciar Test
-                                TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
+                                TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
                                 if (Charger.tests[2].testGearbeitet == 2 && (pruefFeld == "PF2" || pruefFeld == "PF3"))
+                                {
+                                    Charger.tests[4].testGearbeitet = 1;
+                                    TempWeiter.Start();
+                                }
+                                else
                                 {
                                     antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                                     if (antworte == DialogResult.OK)
                                     {
                                         Charger.tests[4].testGearbeitet = 1;
-
+                                        TempWeiter.Start();
                                     }
                                     else
                                     {
@@ -916,15 +924,14 @@ namespace EoL_Automatik_Ladetest
                                         Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
                                     }
                                 }
-                                else Charger.tests[4].testGearbeitet = 1;
                             }
                             else if (Charger.tests[4].testGearbeitet == 1)
                             {
                                 TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
                                 string projectName = pruefFeld;
-                                if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
-                                if (erk) projectName = projectName + "1m.cdpj";
-                                else projectName = projectName + "3m.cdpj";
+                                if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
+                                if (erk) projectName = projectName + "Test1m.cdpj";
+                                else projectName = projectName + "Test3m.cdpj";
                                 if (testStarten(projectName, Resources.DC1LadeTest))
                                 {
                                     Charger.tests[4].testGearbeitet = 2;
@@ -947,6 +954,7 @@ namespace EoL_Automatik_Ladetest
                                 if (Charger.tests[4].testBestanden) TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestandenNicht);
                                 prozess = 7;
+                                TempWeiter.Start();
                             }
                         }
                         else
@@ -1988,8 +1996,9 @@ namespace EoL_Automatik_Ladetest
                     if (lblCDSstatus.Text == "inactive")
                     {
                         // Iniciar Test
-                        TexteHinzufuegen(testName + " " + Resources.m_starten);
-                        Console.WriteLine(testName + " " + Resources.m_starten);
+                        //_testCaseHandler.ResetErrors();
+                        TexteHinzufuegen(testName + " " + Resources.m_starten + " project: " + projectName);
+                        Console.WriteLine(testName + " " + Resources.m_starten + " project: " + projectName);
                         _testCaseHandler.StartTest(projectName, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
                         Schritt = 2;
                         Thread.Sleep(5000);
@@ -2017,6 +2026,8 @@ namespace EoL_Automatik_Ladetest
                         if (Versuch < 3)
                         {
                             Versuch++;
+                            _testCaseHandler.ResetErrors();
+                            Thread.Sleep(5000);
                             Schritt = 1;
                         }
                         else
@@ -2380,6 +2391,17 @@ namespace EoL_Automatik_Ladetest
                 tests[i].testErfordelich = true;
                 tests[i].testBestanden = true;
             }
+            List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
+            if (AvailableSinks.Count > 0)
+            {
+                for (var i = 0; i < AvailableSinks.Count; i++)
+                {
+                    senke = AvailableSinks[i];
+
+                }
+            }
+            _testCaseHandler.StartTest(tbFA.Text, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
+
         }
     }
 }
