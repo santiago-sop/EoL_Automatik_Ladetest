@@ -79,7 +79,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bericht ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die LadeTestBericht ähnelt.
         /// </summary>
         internal static string bericht {
             get {

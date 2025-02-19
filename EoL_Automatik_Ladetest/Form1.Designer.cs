@@ -387,9 +387,9 @@
             // 
             // tbFA
             // 
-            this.tbFA.Location = new System.Drawing.Point(209, 31);
+            this.tbFA.Location = new System.Drawing.Point(230, 34);
             this.tbFA.Name = "tbFA";
-            this.tbFA.Size = new System.Drawing.Size(100, 22);
+            this.tbFA.Size = new System.Drawing.Size(112, 22);
             this.tbFA.TabIndex = 12;
             // 
             // lblFA
@@ -397,9 +397,9 @@
             this.lblFA.AutoSize = true;
             this.lblFA.Location = new System.Drawing.Point(95, 37);
             this.lblFA.Name = "lblFA";
-            this.lblFA.Size = new System.Drawing.Size(24, 16);
+            this.lblFA.Size = new System.Drawing.Size(109, 20);
             this.lblFA.TabIndex = 13;
-            this.lblFA.Text = "FA";
+            this.lblFA.Text = "Serienummer";
             // 
             // Form1
             // 

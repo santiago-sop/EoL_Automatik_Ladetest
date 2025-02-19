@@ -15,6 +15,7 @@ using Microsoft.Office.Interop.Word;
 using System.IO;
 using Application = Microsoft.Office.Interop.Word.Application;
 using System.Threading;
+using CdsTestCaseLibrary.Models.Project;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -99,15 +100,6 @@ namespace EoL_Automatik_Ladetest
                     if (prozess > 2) { TempWeiter.Start(); Console.WriteLine("00 ACTIVE EL TEMP"); }
                 }
             }
-            //else if (lblCDSstatus.Text != "active" && status.ToString() == "active")
-            //{
-                //if (prozess == 1 || prozess == 2)
-                //{
-                    //TempWeiter.Interval = 20000;
-                    //TempWeiter.Start();
-                    //Console.WriteLine("01 ACTIVE EL TEMP");
-                //}
-            //}
             lblCDSstatus.Text = status.ToString();
         }
 
@@ -280,6 +272,9 @@ namespace EoL_Automatik_Ladetest
             public bool testErfordelich { get; set; }
             public bool testBestanden { get; set; }
             public int testGearbeitet { get; set; }
+            public string spannung { get; set; }
+            public string strom { get; set; }
+            public string zeit { get; set; }
 
             public Test(string testname, bool erfordelich)
             {
@@ -287,6 +282,9 @@ namespace EoL_Automatik_Ladetest
                 testErfordelich = erfordelich;
                 testBestanden = false;
                 testGearbeitet = 0;
+                spannung = null;
+                strom = null;
+                zeit = null;
             }
         }
 
@@ -340,36 +338,26 @@ namespace EoL_Automatik_Ladetest
                         TexteHinzufuegen(Resources.m_starten);
 
                         TexteHinzufuegen(Resources.m_cdsConnected);
-                        antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
-                        if (antworte == DialogResult.OK)
+                        prozess++;
+                        Charger.CDS_SerialNumber = _testCaseHandler.GetCdsInfo().SerialNumber;
+                        Charger.CDS_FwVersion = _testCaseHandler.GetCdsInfo().FwVersion;
+                        List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
+                        if (AvailableSinks.Count > 0)
                         {
-                            prozess++;
-                            Charger.CDS_SerialNumber = _testCaseHandler.GetCdsInfo().SerialNumber;
-                            Charger.CDS_FwVersion = _testCaseHandler.GetCdsInfo().FwVersion;
-                            List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                            if (AvailableSinks.Count > 0)
+                            for (var i = 0; i < AvailableSinks.Count; i++)
                             {
-                                for (var i = 0; i < AvailableSinks.Count; i++)
-                                {
-                                    senke = AvailableSinks[i];
+                                senke = AvailableSinks[i];
 
-                                }
                             }
-                            Charger.Sink = senke.Name;
-                            Charger.MaxDCPower = senke.ParamValues[0].Name;
-                            TexteHinzufuegen("CDS S/N: " + Charger.CDS_SerialNumber);
-                            TexteHinzufuegen("CDS Fw Version: " + Charger.CDS_FwVersion);
-                            TexteHinzufuegen("Max DC Power: " + Charger.MaxDCPower);
-                            TempWeiter.Start();
-                            Console.WriteLine("02 ACTIVE EL TEMP");
                         }
-                        else
-                        {
-                            TexteHinzufuegen(Resources.m_testStopt);
-                            Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
-                            endProgram();
-                        }
+                        Charger.Sink = senke.ParamValues[0].Value;
+                        TexteHinzufuegen("CDS S/N: " + Charger.CDS_SerialNumber);
+                        TexteHinzufuegen("CDS Fw Version: " + Charger.CDS_FwVersion);
+                        TexteHinzufuegen("Senke: " + Charger.Sink);
+                        TempWeiter.Start();
+                        Console.WriteLine("02 ACTIVE EL TEMP");
+
                         break;
                     //Notaus Test
                     case 1:
@@ -381,7 +369,11 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     case 0:
                                         //empezar test
-                                        Console.WriteLine("Intentar Iniciar Test");
+                                        antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                                        if (antworte == DialogResult.OK)
+                                        {
+                                            Console.WriteLine("Intentar Iniciar Test");
                                         
                                         if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
                                         {
@@ -393,7 +385,14 @@ namespace EoL_Automatik_Ladetest
                                             endProgram();
                                             Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
                                         }
-
+                                        }
+                                        else
+                                        {
+                                            TexteHinzufuegen(Resources.m_testStopt);
+                                            Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
+                                            endProgram();
+                                        }
+                                        
                                         /*
                                         List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
                                         if (AvailableSinks.Count > 0)
@@ -519,6 +518,7 @@ namespace EoL_Automatik_Ladetest
                             Console.WriteLine("11 ACTIVE EL TEMP");
                         }
                         break;
+                    
                     //Türkontakt Test
                     case 2:
                         if (Charger.tests[1].testErfordelich)
@@ -629,6 +629,7 @@ namespace EoL_Automatik_Ladetest
                             Console.WriteLine("20 ACTIVE EL TEMP");
                         }
                         break;
+                    
                     //DC1 Ladetest
                     case 3:
                         //DC1 Ladetest
@@ -643,7 +644,6 @@ namespace EoL_Automatik_Ladetest
 
                                 if (antworte == DialogResult.OK)
                                 {
-                                    TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
                                     string projectName = pruefFeld;
                                     if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
                                     if (erk) projectName = projectName + "Test1m.cdpj";
@@ -651,6 +651,7 @@ namespace EoL_Automatik_Ladetest
                                     if (testStarten(projectName, Resources.DC1LadeTest))
                                     {
                                         Charger.tests[2].testGearbeitet = 1;
+
                                     }
                                     else
                                     {
@@ -709,15 +710,15 @@ namespace EoL_Automatik_Ladetest
 
                                     if (tests[2].testGearbeitet > 0 && tests[2].testGearbeitet <= 3)
                                     {
-                                        List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                        if (AvailableSinks.Count > 0)
-                                        {
-                                            for (var i = 0; i < AvailableSinks.Count; i++)
-                                            {
-                                                senke = AvailableSinks[i];
+                                        //List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
+                                        //if (AvailableSinks.Count > 0)
+                                        //{
+                                            //for (var i = 0; i < AvailableSinks.Count; i++)
+                                            //{
+                                                //senke = AvailableSinks[i];
 
-                                            }
-                                        }
+                                            //}
+                                        //}
                                         if (lblCDSstatus.Text == "inactive")
                                         {
                                             TexteHinzufuegen(Resources.DC1LadeTest + " " + tests[2].testGearbeitet.ToString() + " " + Resources.m_starten);
@@ -791,6 +792,7 @@ namespace EoL_Automatik_Ladetest
                             }
                         }
                             break;
+                    
                     //DC1 Isolationsprüfung
                     case 4:
                         //DC1 Isotest
@@ -831,6 +833,7 @@ namespace EoL_Automatik_Ladetest
                                 }
                                 else if (tests[3].testGearbeitet == 1)
                                 {
+                                    /*
                                     List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
                                     if (AvailableSinks.Count > 0)
                                     {
@@ -840,6 +843,7 @@ namespace EoL_Automatik_Ladetest
 
                                         }
                                     }
+                                    */
                                     if (lblCDSstatus.Text == "inactive")
                                     {
                                         TexteHinzufuegen(Resources.DC1IsoTest + " " + tests[3].testGearbeitet.ToString() + " " + Resources.m_starten);
@@ -894,6 +898,7 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                         }
                         break;
+                    
                     //DC2 Ladetest
                     case 5:
                         //DC2 Ladetest
@@ -986,6 +991,7 @@ namespace EoL_Automatik_Ladetest
 
                                     if (tests[4].testGearbeitet > 0 && tests[4].testGearbeitet <= 3)
                                     {
+                                        /*
                                         List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
                                         if (AvailableSinks.Count > 0)
                                         {
@@ -995,6 +1001,7 @@ namespace EoL_Automatik_Ladetest
 
                                             }
                                         }
+                                        */
                                         if (lblCDSstatus.Text == "inactive")
                                         {
                                             TexteHinzufuegen(Resources.DC2LadeTest + " " + tests[4].testGearbeitet.ToString() + " " + Resources.m_starten);
@@ -1066,6 +1073,7 @@ namespace EoL_Automatik_Ladetest
                             }
                         }
                         break;
+                    
                     //DC2 Isolationsprüfung
                     case 6:
                         //DC2 Isotest
@@ -1107,6 +1115,7 @@ namespace EoL_Automatik_Ladetest
                                 }
                                 else if (tests[5].testGearbeitet == 1)
                                 {
+                                    /*
                                     List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
                                     if (AvailableSinks.Count > 0)
                                     {
@@ -1116,6 +1125,7 @@ namespace EoL_Automatik_Ladetest
 
                                         }
                                     }
+                                    */
                                     if (lblCDSstatus.Text == "inactive")
                                     {
                                         TexteHinzufuegen(Resources.DC2IsoTest + " " + tests[5].testGearbeitet.ToString() + " " + Resources.m_starten);
@@ -1170,6 +1180,8 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                         }
                         break;
+                    
+                    //end program
                     case 7:
                         endProgram();
                         Console.WriteLine("07 LLAME A PARAR EL PROGRAMA");
@@ -1997,10 +2009,13 @@ namespace EoL_Automatik_Ladetest
                     {
                         // Iniciar Test
                         //_testCaseHandler.ResetErrors();
-                        TexteHinzufuegen(testName + " " + Resources.m_starten + " project: " + projectName);
+                        TexteHinzufuegen("Project: " + projectName);
                         Console.WriteLine(testName + " " + Resources.m_starten + " project: " + projectName);
                         _testCaseHandler.StartTest(projectName, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
                         Schritt = 2;
+
+                        
+
                         Thread.Sleep(5000);
                     }
                     else if (lblCDSstatus.Text == "error")
@@ -2044,7 +2059,6 @@ namespace EoL_Automatik_Ladetest
         private void endProgram()
         {
             TempWeiter.Stop();
-            //TempTur.Stop();
             TexteHinzufuegen("Ende Programm");
             TexteHinzufuegen("----------------------");
             resetAllesTest();
@@ -2187,7 +2201,7 @@ namespace EoL_Automatik_Ladetest
             {
                 Filter = "PDF files (*.pdf)|*.pdf",
                 Title = Resources.m_SpeichernAlsPDF,
-                FileName = Resources.bericht + "_" + serie_number_charger + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
+                FileName = Resources.bericht + "_" + Charger.FA + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
             };
             //string pdfFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Reporte.pdf";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -2211,43 +2225,49 @@ namespace EoL_Automatik_Ladetest
                     // Rellenar los campos en el documento de Word
                     foreach (Field field in wordDoc.Fields)
                     {
-                        if (field.Code.Text.Contains("SERIE_NUMBER_CHARGER"))
+                        if (field.Code.Text.Contains("SERIAL_NUMBER_CHARGER"))
                         {
-                            field.Result.Text = serie_number_charger; // Número de serie dinámico
+                            field.Result.Text = Charger.FA; // Número de serie dinámico
                         }
                         else if (field.Code.Text.Contains("TOTAL_RESULT"))
                         {
-                            field.Result.Text = "Bestanden";    // Resultado del Test
+                            bool result = true;
+                            foreach(Test test in Charger.tests)
+                            {
+                                if (!test.testBestanden) result = false;
+                            }
+                            if (result) field.Result.Text = "passed";    // Resultado del Test
+                            else field.Result.Text = "failed";
                         }
                         else if (field.Code.Text.Contains("DATE"))
                         {
                             field.Result.Text = DateTime.Now.ToString("dd/MM/yyyy"); // Fecha actual
                         }
-                        else if (field.Code.Text.Contains("SERIE_NUMBER_CDS"))
+                        else if (field.Code.Text.Contains("SERIAL_NUMBER_CDS"))
                         {
-                            field.Result.Text = serie_number_CDS; // Numero de serie de CDS
+                            field.Result.Text = Charger.CDS_SerialNumber; // Numero de serie de CDS
                         }
                         else if (field.Code.Text.Contains("CDS_FW_VERSION"))
                         {
-                            field.Result.Text = serie_number_CDS; // Numero de serie de CDS
+                            field.Result.Text = Charger.CDS_FwVersion; // Numero de serie de CDS
                         }
                         else if (field.Code.Text.Contains("SINK"))
                         {
-                            field.Result.Text = "SINK"; // Fuente
+                            field.Result.Text = Charger.Sink; // Fuente
                         }
-                        else if (field.Code.Text.Contains("MAX_DC_POWER"))
-                        {
-                            field.Result.Text = "10kw"; // Maxima potencia
-                        }
-                        else if (field.Code.Text.Contains("NORM"))
-                        {
-                            field.Result.Text = norm; // Norma utilizada
-                        }
+                        //else if (field.Code.Text.Contains("MAX_DC_POWER"))
+                        //{
+                            //field.Result.Text = "10kw"; // Maxima potencia
+                        //}
+                        //else if (field.Code.Text.Contains("NORM"))
+                        //{
+                            //field.Result.Text = norm; // Norma utilizada
+                        //}
                     }
                     // Insertar un párrafo vacío antes de agregar el primer título de la tabla
                     LeerenAbsatzEinfuegen(wordDoc);
 
-                    foreach (Test test in tests)
+                    foreach (Test test in Charger.tests)
                     {
                         if (test.testErfordelich)
                         {
@@ -2261,16 +2281,40 @@ namespace EoL_Automatik_Ladetest
                             }
                             else if (test.name.Contains("Ladetest"))
                             {
-                                var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
+                                List<List<string>> datei;
+                                if (erk)
                                 {
-                                    new List<string> { "Power", "8,1kw" },
-                                    new List<string> { "Current", "18A" },
-                                    new List<string> { "Voltage", "450V" },
-                                    new List<string> { "Duration", "1m" },
-                                    new List<string> { "Quantity", "3" },
-                                    new List<string> { "Result", test.testBestanden.ToString() },
-                                    new List<string> { "Isolationtest", "Aprobed" }
-                                });
+                                    datei = new List<List<string>>{
+                                        new List<string> { "Current", "18A" },
+                                        new List<string> { "Voltage", "550V" },
+                                        new List<string> { "Duration", "60s" },
+                                        new List<string> { "Quantity", "3" },
+                                        new List<string> { "Result", test.testBestanden.ToString() },
+                                        new List<string> { "Isolationtest", "passed" }
+                                    };
+                                }
+                                else
+                                {
+                                    datei = new List<List<string>>{
+                                        new List<string> { "Current", "18A" },
+                                        new List<string> { "Voltage", "550V" },
+                                        new List<string> { "Duration", "30m0s" },
+                                        new List<string> { "Quantity", "3" },
+                                        new List<string> { "Result", test.testBestanden.ToString() },
+                                        new List<string> { "Isolationtest", "passed" }
+                                    };
+                                }
+                                //var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
+                                //{
+                                    //new List<string> { "Power", "8,1kw" },
+                                    //new List<string> { "Current", "18A" },
+                                    //new List<string> { "Voltage", "450V" },
+                                    //new List<string> { "Duration", "1m" },
+                                    //new List<string> { "Quantity", "3" },
+                                    //new List<string> { "Result", test.testBestanden.ToString() },
+                                    //new List<string> { "Isolationtest", "Aprobed" }
+                                //});
+                                var tabelleDatei = new TabelleDatei(test.name, datei);
                                 TabelleHinzufuegen(wordDoc, tabelleDatei);
                             }
 
@@ -2391,16 +2435,51 @@ namespace EoL_Automatik_Ladetest
                 tests[i].testErfordelich = true;
                 tests[i].testBestanden = true;
             }
-            List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-            if (AvailableSinks.Count > 0)
-            {
-                for (var i = 0; i < AvailableSinks.Count; i++)
-                {
-                    senke = AvailableSinks[i];
+            //List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
+            //if (AvailableSinks.Count > 0)
+            //{
+            //for (var i = 0; i < AvailableSinks.Count; i++)
+            //{
+            //senke = AvailableSinks[i];
+            //}
+            //}
+            //_testCaseHandler.StartTest(tbFA.Text, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
 
+            string pr = tbFA.Text;
+            string[] testCases = _testCaseHandler.GetTestCases(pr).ToArray();
+            //string tc = _testCaseHandler.GetTestCases(pr)[1];
+            //string selectedTestCase = testCases[1];
+            string spName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[0].Value;
+            string spValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[1].Value;
+            string spUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[2].Value;
+
+            TexteHinzufuegen(spName + ": " + spValue + spUnit);
+
+            string stName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[0].Value;
+            string stValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[1].Value;
+            string stUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[2].Value;
+            TexteHinzufuegen(stName + ": " + stValue + stUnit);
+
+            string durName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[0].Value;
+            string durValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[1].Value;
+            string durUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[2].Value;
+            TexteHinzufuegen(durName + ": " + durValue + durUnit);
+
+            /*
+            foreach (string testCase in testCases)
+            {
+                foreach (Parameter parameterStructure in _testCaseHandler.GetParameters(testCase, pr))
+                {
+                    TexteHinzufuegen(parameterStructure.ToString());
+                    TexteHinzufuegen(parameterStructure.Id.ToString());
+                    foreach (ParamValue paramValue in parameterStructure.ParamValues)
+                    {
+                        TexteHinzufuegen("Name: " + paramValue.Name);
+                        TexteHinzufuegen("Value: " + paramValue.Value);
+                    }
                 }
             }
-            _testCaseHandler.StartTest(tbFA.Text, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
+            */
 
         }
     }
