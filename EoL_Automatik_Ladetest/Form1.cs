@@ -16,6 +16,7 @@ using System.IO;
 using Application = Microsoft.Office.Interop.Word.Application;
 using System.Threading;
 using CdsTestCaseLibrary.Models.Project;
+using static EoL_Automatik_Ladetest.Form1;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -276,6 +277,8 @@ namespace EoL_Automatik_Ladetest
             public string strom { get; set; }
             public string zeit { get; set; }
 
+            public List<List<List<string>>> tabelleDatei { get; set; }
+
             public Test(string testname, bool erfordelich)
             {
                 name = testname;
@@ -285,6 +288,7 @@ namespace EoL_Automatik_Ladetest
                 spannung = null;
                 strom = null;
                 zeit = null;
+                tabelleDatei = new List<List<List<string>>>();
             }
         }
 
@@ -652,6 +656,42 @@ namespace EoL_Automatik_Ladetest
                                     {
                                         Charger.tests[2].testGearbeitet = 1;
 
+                                        //int j = 0;
+                                        foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
+                                        {
+                                            List<List<string>> datei2 = new List<List<string>>();
+                                            foreach (Parameter p in _testCaseHandler.GetParameters(testCase, projectName))
+                                            {
+                                                string spName = p.ParamValues[0].Value;
+                                                string spValue = p.ParamValues[1].Value;
+                                                string spUnit = p.ParamValues[2].Value;
+
+                                                TexteHinzufuegen(spName + ": " + spValue + spUnit);
+                                                datei2.Add(new List<string> { spName, spValue + spUnit });
+                                                //Charger.tests[2].tabelleDatei.Add(datei2);
+
+                                            }
+                                            TexteHinzufuegen("------------------------");
+                                            Charger.tests[2].tabelleDatei.Add(datei2);
+                                        }
+                                        //List<List<string>> datei = new List<List<string>>{
+                                            //new List<string> { "Current", "18A" },
+                                            //new List<string> { "Voltage", "550V" },
+                                            //new List<string> { "Duration", "60s" },
+                                            //new List<string> { "Quantity", "3" },
+                                            //new List<string> { "Result", test.testBestanden.ToString() },
+                                            //new List<string> { "Isolationtest", "passed" }
+                                        //};
+                                        foreach (List<List<string>> s in Charger.tests[2].tabelleDatei)
+                                        {
+                                            foreach(List<string> s2 in s)
+                                            {
+                                                foreach (string s3 in s2)
+                                                {
+                                                    //
+                                                }
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -2316,6 +2356,11 @@ namespace EoL_Automatik_Ladetest
                                 //});
                                 var tabelleDatei = new TabelleDatei(test.name, datei);
                                 TabelleHinzufuegen(wordDoc, tabelleDatei);
+
+                                foreach (List<List<string>> strings in test.tabelleDatei)
+                                {
+                                    TabelleHinzufuegen(wordDoc, new TabelleDatei(test.name, strings));
+                                }
                             }
 
                         }
@@ -2445,41 +2490,63 @@ namespace EoL_Automatik_Ladetest
             //}
             //_testCaseHandler.StartTest(tbFA.Text, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
 
-            string pr = tbFA.Text;
-            string[] testCases = _testCaseHandler.GetTestCases(pr).ToArray();
-            //string tc = _testCaseHandler.GetTestCases(pr)[1];
-            //string selectedTestCase = testCases[1];
-            string spName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[0].Value;
-            string spValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[1].Value;
-            string spUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[0].ParamValues[2].Value;
+            Charger = new ChargerTest(tbFA.Text, tests);
 
-            TexteHinzufuegen(spName + ": " + spValue + spUnit);
-
-            string stName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[0].Value;
-            string stValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[1].Value;
-            string stUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[1].ParamValues[2].Value;
-            TexteHinzufuegen(stName + ": " + stValue + stUnit);
-
-            string durName = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[0].Value;
-            string durValue = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[1].Value;
-            string durUnit = _testCaseHandler.GetParameters(_testCaseHandler.GetTestCases(pr)[1], pr)[2].ParamValues[2].Value;
-            TexteHinzufuegen(durName + ": " + durValue + durUnit);
-
-            /*
-            foreach (string testCase in testCases)
+            Charger.CDS_SerialNumber = _testCaseHandler.GetCdsInfo().SerialNumber;
+            Charger.CDS_FwVersion = _testCaseHandler.GetCdsInfo().FwVersion;
+            List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
+            if (AvailableSinks.Count > 0)
             {
-                foreach (Parameter parameterStructure in _testCaseHandler.GetParameters(testCase, pr))
+                for (var i = 0; i < AvailableSinks.Count; i++)
                 {
-                    TexteHinzufuegen(parameterStructure.ToString());
-                    TexteHinzufuegen(parameterStructure.Id.ToString());
-                    foreach (ParamValue paramValue in parameterStructure.ParamValues)
-                    {
-                        TexteHinzufuegen("Name: " + paramValue.Name);
-                        TexteHinzufuegen("Value: " + paramValue.Value);
-                    }
+                    senke = AvailableSinks[i];
                 }
             }
-            */
+            //Charger.Sink = senke.ParamValues[0].Value;
+            TexteHinzufuegen("CDS S/N: " + Charger.CDS_SerialNumber);
+            TexteHinzufuegen("CDS Fw Version: " + Charger.CDS_FwVersion);
+            TexteHinzufuegen("Senke: " + Charger.Sink);
+
+            string pr = tbFA.Text;
+          
+            List<List<List<string>>> pruebaLista = new List<List<List<string>>>();
+
+            
+            foreach (string testCase in _testCaseHandler.GetTestCases(pr))
+            {
+                List<List<string>> datei2 = new List<List<string>>();
+                foreach (Parameter p in _testCaseHandler.GetParameters(testCase, pr))
+                {
+                    string spName = p.ParamValues[0].Value;
+                    string spValue = p.ParamValues[1].Value;
+                    string spUnit = p.ParamValues[2].Value;
+
+                    TexteHinzufuegen(spName + ": " + spValue + spUnit);
+                    datei2.Add(new List<string> { spName, spValue + spUnit });
+                    //Charger.tests[2].tabelleDatei.Add(datei2);
+                }
+                TexteHinzufuegen("------------------------");
+                pruebaLista.Add(datei2);
+                Charger.tests[2].tabelleDatei.Add(datei2);
+            }
+            TexteHinzufuegen("+++++++++++++++++++++++++++");
+            int j = 1;
+            foreach (List<List<string>> s in pruebaLista)
+            {
+                string valores; 
+                foreach (List<string> s2 in s)
+                {
+                    valores = "Test numero " + j.ToString() + ": ";
+                    foreach (string s3 in s2)
+                    {
+                        valores += s3 + " ";
+                    }
+                    TexteHinzufuegen(valores);
+                }
+                j++;
+                TexteHinzufuegen("------------------------");
+            }
+
 
         }
     }

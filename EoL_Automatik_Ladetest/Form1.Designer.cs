@@ -397,7 +397,7 @@
             this.lblFA.AutoSize = true;
             this.lblFA.Location = new System.Drawing.Point(95, 37);
             this.lblFA.Name = "lblFA";
-            this.lblFA.Size = new System.Drawing.Size(109, 20);
+            this.lblFA.Size = new System.Drawing.Size(87, 16);
             this.lblFA.TabIndex = 13;
             this.lblFA.Text = "Serienummer";
             // 
@@ -405,6 +405,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.ClientSize = new System.Drawing.Size(826, 835);
             this.Controls.Add(this.lblFA);
             this.Controls.Add(this.tbFA);
