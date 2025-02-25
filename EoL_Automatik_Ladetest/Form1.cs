@@ -12,11 +12,13 @@ using EoL_Automatik_Ladetest.Properties;
 using CdsTestCaseLibrary.Enums;
 using CdsTestCaseLibrary.Models;
 using Microsoft.Office.Interop.Word;
-using System.IO;
+//using System.IO;
 using Application = Microsoft.Office.Interop.Word.Application;
 using System.Threading;
 using CdsTestCaseLibrary.Models.Project;
-using static EoL_Automatik_Ladetest.Form1;
+//using static EoL_Automatik_Ladetest.Form1;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -227,7 +229,14 @@ namespace EoL_Automatik_Ladetest
                 checkBoxTestLinks.Text = Resources.DC1LadeTest + Resources._3m5m;
                 checkBoxTestRechts.Text = Resources.DC2LadeTest + Resources._3m5m;
                 checkBoxNotaus.Enabled = true;
-                checkBoxNotausTest.Enabled = true;
+                if (checkBoxNotaus.Checked == true)
+                {
+                    checkBoxNotausTest.Enabled = true;
+                }
+                else
+                {
+                    checkBoxNotausTest.Enabled = false;
+                }
             }
         }
 
@@ -363,6 +372,7 @@ namespace EoL_Automatik_Ladetest
                         Console.WriteLine("02 ACTIVE EL TEMP");
 
                         break;
+                    
                     //Notaus Test
                     case 1:
                         if (Charger.tests[0].testErfordelich)
@@ -373,22 +383,23 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     case 0:
                                         //empezar test
+                                        TexteHinzufuegen(Resources.notAusTest + " " + Resources.m_starten);
                                         antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
                                         if (antworte == DialogResult.OK)
                                         {
                                             Console.WriteLine("Intentar Iniciar Test");
                                         
-                                        if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
-                                        {
-                                            Charger.tests[0].testGearbeitet++;
-                                            TempWeiter.Start();
-                                        }
-                                        else
-                                        {
-                                            endProgram();
-                                            Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
-                                        }
+                                            if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
+                                            {
+                                                Charger.tests[0].testGearbeitet++;
+                                                TempWeiter.Start();
+                                            }
+                                            else
+                                            {
+                                                endProgram();
+                                                Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
+                                            }
                                         }
                                         else
                                         {
@@ -396,39 +407,6 @@ namespace EoL_Automatik_Ladetest
                                             Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
                                             endProgram();
                                         }
-                                        
-                                        /*
-                                        List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                        if (AvailableSinks.Count > 0)
-                                        {
-                                            for (var i = 0; i < AvailableSinks.Count; i++)
-                                            {
-                                                senke = AvailableSinks[i];
-                                            }
-                                        }
-                                        if (lblCDSstatus.Text == "inactive")
-                                        {
-                                            TexteHinzufuegen(Resources.notAusTest + " " + Resources.m_starten);
-                                            Console.WriteLine("Iniciando Test: " + pruefFeld + "tna.cdpj, con la fuente:" + senke.Name.ToString());
-                                            Console.WriteLine("MANDE A  INICIAR TEST");
-                                            _testCaseHandler.StartTest(pruefFeld + "tna.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                            //TempWeiter.Interval = 5000;
-                                            tests[0].testGearbeitet++;
-                                        }
-                                        else if (lblCDSstatus.Text == "error")
-                                        {
-                                            _testCaseHandler.ResetErrors();
-                                            _testCaseHandler.SendCdsSourceSinkRequest();
-                                            TempWeiter.Start();
-                                            Console.WriteLine("03 ACTIVE EL TEMP");
-                                        }
-                                        else
-                                        {
-                                            TempWeiter.Start();
-                                            Console.WriteLine("04 ACTIVE EL TEMP");
-                                        }
-
-                                        */
                                         
                                         break;
                                     case 1:
@@ -472,25 +450,8 @@ namespace EoL_Automatik_Ladetest
                                             }
                                         }
                                         break;
-                                        /*
-                                    case 3:
-                                        if (lblCDSstatus.Text != "active") //unknown
-                                        {
-                                            Charger.tests[0].testGearbeitet = 10;
-                                            //prozess++;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("08 ACTIVE EL TEMP");
-                                        }
-                                        else
-                                        {
-                                            TempWeiter.Interval = 10000;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("09 ACTIVE EL TEMP");
-                                            Console.WriteLine("CDS aun activa");
-                                            _testCaseHandler.StopTest();
-                                        }
+                                    default:
                                         break;
-                                        */
                                 }
                             }
                             else
@@ -502,7 +463,7 @@ namespace EoL_Automatik_Ladetest
                                     Charger.tests[0].testBestanden = true;
 
                                     TexteHinzufuegen(Resources.notAusTest + " " + Resources.m_endet);
-
+                                    TexteHinzufuegen("  ");
                                     prozess++;
 
                                     TempWeiter.Start();
@@ -533,13 +494,48 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     case 0:
                                         //empezar test
+                                        TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_starten);
                                         Console.WriteLine("Intentar Iniciar Test");
-
-                                        if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[1].name))
+                                        if (Charger.tests[0].testErfordelich)
                                         {
-                                            Charger.tests[1].testGearbeitet++;
-                                            TempWeiter.Start();
+                                            if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[1].name))
+                                            {
+                                                Charger.tests[1].testGearbeitet++;
+                                                TempWeiter.Start();
+                                            }
+                                            else
+                                            {
+                                                endProgram();
+                                                Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
+                                            }
                                         }
+                                        else
+                                        {
+                                            antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                                            if (antworte == DialogResult.OK)
+                                            {
+                                                Console.WriteLine("Intentar Iniciar Test");
+
+                                                if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
+                                                {
+                                                    Charger.tests[1].testGearbeitet++;
+                                                    TempWeiter.Start();
+                                                }
+                                                else
+                                                {
+                                                    endProgram();
+                                                    Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                TexteHinzufuegen(Resources.m_testStopt);
+                                                Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
+                                                endProgram();
+                                            }
+                                        }
+
                                         break;
                                     case 1:
                                         //si activo --> activar temporizador
@@ -581,27 +577,8 @@ namespace EoL_Automatik_Ladetest
                                             }
                                         }
                                         break;
-                                        /*
-                                    case 3:
-                                        if (lblCDSstatus.Text != "active") //unknown
-                                        {
-                                            //si resultado es passed --> testBestanden = true
-                                            Console.WriteLine("El resultado es: " + testCaseResult);
-
-                                            tests[1].testGearbeitet = 10;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("17 ACTIVE EL TEMP");
-                                        }
-                                        else
-                                        {
-                                            TempWeiter.Interval = 10000;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("18 ACTIVE EL TEMP");
-                                            Console.WriteLine("CDS aun activa");
-                                            _testCaseHandler.StopTest();
-                                        }
+                                    default:
                                         break;
-                                        */
                                 }
                             }
                             else
@@ -613,7 +590,7 @@ namespace EoL_Automatik_Ladetest
                                     Charger.tests[1].testBestanden = true;
 
                                     TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_endet);
-
+                                    TexteHinzufuegen("  ");
                                     prozess++;
 
                                     TempWeiter.Start();
@@ -650,8 +627,9 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     string projectName = pruefFeld;
                                     if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
-                                    if (erk) projectName = projectName + "Test1m.cdpj";
-                                    else projectName = projectName + "Test3m.cdpj";
+                                    //if (erk) projectName = projectName + "Test1m.cdpj";
+                                    if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                                    else projectName = projectName + "Test5m.cdpj";
                                     if (testStarten(projectName, Resources.DC1LadeTest))
                                     {
                                         Charger.tests[2].testGearbeitet = 1;
@@ -673,24 +651,6 @@ namespace EoL_Automatik_Ladetest
                                             }
                                             TexteHinzufuegen("------------------------");
                                             Charger.tests[2].tabelleDatei.Add(datei2);
-                                        }
-                                        //List<List<string>> datei = new List<List<string>>{
-                                            //new List<string> { "Current", "18A" },
-                                            //new List<string> { "Voltage", "550V" },
-                                            //new List<string> { "Duration", "60s" },
-                                            //new List<string> { "Quantity", "3" },
-                                            //new List<string> { "Result", test.testBestanden.ToString() },
-                                            //new List<string> { "Isolationtest", "passed" }
-                                        //};
-                                        foreach (List<List<string>> s in Charger.tests[2].tabelleDatei)
-                                        {
-                                            foreach(List<string> s2 in s)
-                                            {
-                                                foreach (string s3 in s2)
-                                                {
-                                                    //
-                                                }
-                                            }
                                         }
                                     }
                                     else
@@ -717,7 +677,10 @@ namespace EoL_Automatik_Ladetest
                                 }
                                 if (Charger.tests[2].testBestanden) TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestandenNicht);
+                                TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_endet);
+                                TexteHinzufuegen("  ");
                                 prozess = 5;
+                                Charger.tests[3].testErfordelich = false;
                                 TempWeiter.Start();
                             }
                         }
@@ -972,14 +935,32 @@ namespace EoL_Automatik_Ladetest
                             }
                             else if (Charger.tests[4].testGearbeitet == 1)
                             {
-                                TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
                                 string projectName = pruefFeld;
                                 if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
-                                if (erk) projectName = projectName + "Test1m.cdpj";
-                                else projectName = projectName + "Test3m.cdpj";
+                                if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                                //if (erk) projectName = projectName + "Test1m.cdpj";
+                                else projectName = projectName + "Test5m.cdpj";
                                 if (testStarten(projectName, Resources.DC1LadeTest))
                                 {
                                     Charger.tests[4].testGearbeitet = 2;
+
+                                    foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
+                                    {
+                                        List<List<string>> datei2 = new List<List<string>>();
+                                        foreach (Parameter p in _testCaseHandler.GetParameters(testCase, projectName))
+                                        {
+                                            string spName = p.ParamValues[0].Value;
+                                            string spValue = p.ParamValues[1].Value;
+                                            string spUnit = p.ParamValues[2].Value;
+
+                                            TexteHinzufuegen(spName + ": " + spValue + spUnit);
+                                            datei2.Add(new List<string> { spName, spValue + spUnit });
+
+                                        }
+                                        TexteHinzufuegen("------------------------");
+                                        Charger.tests[4].tabelleDatei.Add(datei2);
+                                    }
+
                                 }
                                 else
                                 {
@@ -998,7 +979,10 @@ namespace EoL_Automatik_Ladetest
                                 }
                                 if (Charger.tests[4].testBestanden) TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestandenNicht);
+                                TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_endet);
+                                TexteHinzufuegen("  ");
                                 prozess = 7;
+                                Charger.tests[5].testErfordelich = false;
                                 TempWeiter.Start();
                             }
                         }
@@ -2110,7 +2094,7 @@ namespace EoL_Automatik_Ladetest
         {
             for (int i = 0; i < tests.Length; i++)
             {
-                tests[i].testBestanden = false;
+                //tests[i].testBestanden = false;
                 tests[i].testGearbeitet = 0;
             }
         }
@@ -2235,14 +2219,14 @@ namespace EoL_Automatik_Ladetest
 
         private void PDFerstellen()
         {
-
             // Mostrar el cuadro de dialogo para guardar el archivo
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
                 Filter = "PDF files (*.pdf)|*.pdf",
                 Title = Resources.m_SpeichernAlsPDF,
-                FileName = Resources.bericht + "_" + Charger.FA + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
+                FileName = Charger.FA + "_TestCaseResport_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
             };
+            
             //string pdfFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Reporte.pdf";
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -2274,7 +2258,10 @@ namespace EoL_Automatik_Ladetest
                             bool result = true;
                             foreach(Test test in Charger.tests)
                             {
-                                if (!test.testBestanden) result = false;
+                                if (test.testErfordelich)
+                                {
+                                    if (!test.testBestanden) result = false;
+                                }
                             }
                             if (result) field.Result.Text = "passed";    // Resultado del Test
                             else field.Result.Text = "failed";
@@ -2295,15 +2282,8 @@ namespace EoL_Automatik_Ladetest
                         {
                             field.Result.Text = Charger.Sink; // Fuente
                         }
-                        //else if (field.Code.Text.Contains("MAX_DC_POWER"))
-                        //{
-                            //field.Result.Text = "10kw"; // Maxima potencia
-                        //}
-                        //else if (field.Code.Text.Contains("NORM"))
-                        //{
-                            //field.Result.Text = norm; // Norma utilizada
-                        //}
                     }
+
                     // Insertar un párrafo vacío antes de agregar el primer título de la tabla
                     LeerenAbsatzEinfuegen(wordDoc);
 
@@ -2315,51 +2295,17 @@ namespace EoL_Automatik_Ladetest
                             {
                                 var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
                                 {
-                                    new List<string> { Resources.ergebnis, test.testBestanden.ToString()}
+                                    new List<string> { "Result", test.testBestanden.ToString()}
                                 });
-                                TabelleHinzufuegen(wordDoc, tabelleDatei);
+                                TabelleHinzufuegen(wordDoc, tabelleDatei, true);
                             }
                             else if (test.name.Contains("Ladetest"))
                             {
-                                List<List<string>> datei;
-                                if (erk)
-                                {
-                                    datei = new List<List<string>>{
-                                        new List<string> { "Current", "18A" },
-                                        new List<string> { "Voltage", "550V" },
-                                        new List<string> { "Duration", "60s" },
-                                        new List<string> { "Quantity", "3" },
-                                        new List<string> { "Result", test.testBestanden.ToString() },
-                                        new List<string> { "Isolationtest", "passed" }
-                                    };
-                                }
-                                else
-                                {
-                                    datei = new List<List<string>>{
-                                        new List<string> { "Current", "18A" },
-                                        new List<string> { "Voltage", "550V" },
-                                        new List<string> { "Duration", "30m0s" },
-                                        new List<string> { "Quantity", "3" },
-                                        new List<string> { "Result", test.testBestanden.ToString() },
-                                        new List<string> { "Isolationtest", "passed" }
-                                    };
-                                }
-                                //var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
-                                //{
-                                    //new List<string> { "Power", "8,1kw" },
-                                    //new List<string> { "Current", "18A" },
-                                    //new List<string> { "Voltage", "450V" },
-                                    //new List<string> { "Duration", "1m" },
-                                    //new List<string> { "Quantity", "3" },
-                                    //new List<string> { "Result", test.testBestanden.ToString() },
-                                    //new List<string> { "Isolationtest", "Aprobed" }
-                                //});
-                                var tabelleDatei = new TabelleDatei(test.name, datei);
-                                TabelleHinzufuegen(wordDoc, tabelleDatei);
-
+                                bool titel = true;
                                 foreach (List<List<string>> strings in test.tabelleDatei)
                                 {
-                                    TabelleHinzufuegen(wordDoc, new TabelleDatei(test.name, strings));
+                                    TabelleHinzufuegen(wordDoc, new TabelleDatei(test.name, strings), titel);
+                                    titel = false;
                                 }
                             }
 
@@ -2431,29 +2377,35 @@ namespace EoL_Automatik_Ladetest
             emptyParagraph.Range.InsertParagraphAfter();
         }
 
-        private void TabelleHinzufuegen(Document wordDoc, TabelleDatei tablaDatos)
+        private void TabelleHinzufuegen(Document wordDoc, TabelleDatei tablaDatos, bool titelErfordelich)
         {
             // Mover el cursor al final del documento
             object endOfDoc = "\\endofdoc";
             object missing = Type.Missing;
             Range wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
 
-            // Añadir título para la tabla
-            Paragraph title = wordDoc.Content.Paragraphs.Add(ref missing);
-            title.Range.Text = tablaDatos.Titel;
-            title.Range.Font.Bold = 1;
-            title.Range.InsertParagraphAfter();
+            if (titelErfordelich)
+            {
+                // Añadir título para la tabla
+                Paragraph title = wordDoc.Content.Paragraphs.Add(ref missing);
+                title.Range.Text = tablaDatos.Titel;
+                title.Range.Font.Bold = 1;
+                title.Range.InsertParagraphAfter();
 
-            // Mover el cursor al final del documento nuevamente
-            wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
-
+                // Mover el cursor al final del documento nuevamente
+                wordRange = wordDoc.Bookmarks.get_Item(ref endOfDoc).Range;
+            }
+            
             // Crear la tabla
             int numRows = tablaDatos.Dateien.Count;
             int numCols = tablaDatos.Dateien[0].Count;
+            //int numCols = 3; //new
             Table table = wordDoc.Tables.Add(wordRange, numRows, numCols);
             table.Borders.Enable = 1;
 
             // Rellenar la tabla con datos
+            //int testNumber = 1; //new
+            
             for (int i = 0; i < numRows; i++)
             {
                 for (int j = 0; j < numCols; j++)
@@ -2461,18 +2413,215 @@ namespace EoL_Automatik_Ladetest
                     table.Cell(i + 1, j + 1).Range.Text = tablaDatos.Dateien[i][j];
                 }
             }
-
-            // Añadir un salto de línea después de la tabla
-            Paragraph afterTable = wordDoc.Content.Paragraphs.Add(ref missing);
-            afterTable.Range.InsertParagraphAfter();
+            
+            //if (titelErfordelich)
+            //{
+                // Añadir un salto de línea después de la tabla
+                Paragraph afterTable = wordDoc.Content.Paragraphs.Add(ref missing);
+                afterTable.Range.InsertParagraphAfter();
+            //}
         }
 
         private void btnPDF_Click(object sender, EventArgs e)
         {
             PDFerstellen();
-
+            //PDFerstellen2();
         }
 
+        /*
+        private void PDFerstellen2()
+        {
+            // Ruta del archivo PDF a generar
+            string pdfFilePath = "C:\\Users\\z004kszj\\Desktop\\Probando reportes\\report.pdf";
+
+            // Crear un nuevo documento PDF
+            PdfDocument pdf = new PdfDocument();
+            pdf.Info.Title = "Reporte";
+
+            // Crear una nueva página en el PDF
+            PdfPage pdfPage = pdf.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
+            XFont font = new XFont("Verdana", 12, XFontStyleEx.Regular);
+
+            // Inicializar la posición del texto
+            double yPoint = 40;
+
+            // Agregar el contenido del reporte
+            gfx.DrawString("Report Information", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Charger S/N.: «SERIAL_NUMBER_CHARGER»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Test result: «TOTAL_RESULT»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Execution date: «DATE»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 40;
+
+            gfx.DrawString("System information", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CDS Serial Number: «SERIAL_NUMBER_CDS»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CDS Firmware Version: «CDS_FW_VERSION»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Sink: «SINK»", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 40;
+
+            gfx.DrawString("Test details", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Door contact test", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Test Case Project: PF1tna.cdpj", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Error flags: correct", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 40;
+
+            gfx.DrawString("DC1 charging test", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Test Case project: PF1Test5m.cdpj", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Quantity: 3 x 5 minutes + isolations test", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Parameter:", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Charging test:", font, XBrushes.Black,
+                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarCurrent: 18A", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("TimerTestDuration: 300s", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 40;
+
+            gfx.DrawString("Isolations test:", font, XBrushes.Black,
+                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarCurrent: 10A", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("RE_Warning: 400000Ohm", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("RE_Fault: 90000Ohm", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("IsoTime: 10s", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 40;
+
+            gfx.DrawString("DC2 charging test", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Test Case project: PF1Test5m.cdpj", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Quantity: 3 x 5 minutes + isolations test", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Parameter:", font, XBrushes.Black,
+                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("Charging test:", font, XBrushes.Black,
+                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("CarCurrent: 18A", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+            yPoint += 20;
+
+            gfx.DrawString("TimerTestDuration: 300s", font, XBrushes.Black,
+                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
+                XStringFormats.TopLeft);
+
+            // Guardar el documento PDF
+            pdf.Save(pdfFilePath);
+
+            Console.WriteLine("El reporte en PDF ha sido generado y guardado como 'report'");
+        }
+        */
         private void button1_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 6; i++)
@@ -2528,6 +2677,7 @@ namespace EoL_Automatik_Ladetest
                 TexteHinzufuegen("------------------------");
                 pruebaLista.Add(datei2);
                 Charger.tests[2].tabelleDatei.Add(datei2);
+                Charger.tests[4].tabelleDatei.Add(datei2);
             }
             TexteHinzufuegen("+++++++++++++++++++++++++++");
             int j = 1;

@@ -40,6 +40,7 @@
       <HintPath>..\..\..\..\OneDrive - Siemens AG\General - SI E SCM LPZ QM\03_EOL_Development\Software\Keysight\CdsTestCaseLibrary_v2.1.0\NET_4.5\CdsTestCaseLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.9.0, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -118,7 +119,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-  <PackageReference Include="Microsoft.Office.Interop.Word" Version="15.0.4797.1004" />
-</ItemGroup>
+    <PackageReference Include="PDFsharp">
+      <Version>6.1.1</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
