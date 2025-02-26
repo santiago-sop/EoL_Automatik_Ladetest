@@ -20,6 +20,7 @@ using CdsTestCaseLibrary.Models.Project;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
 using System.Linq;
+using PdfSharp.Fonts;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -42,9 +43,6 @@ namespace EoL_Automatik_Ladetest
         private string testCaseResult;
         private string pruefFeld;
         private int CDSverloren = 0;
-        private string serie_number_charger;
-        private string serie_number_CDS;
-        private string norm;
         private bool mode;
         private bool DC1fullTest = true;
         private bool DC2fullTest = true;
@@ -54,9 +52,6 @@ namespace EoL_Automatik_Ladetest
         {
             InitializeComponent();
 
-            serie_number_CDS = "CDS";
-            serie_number_charger = "17000xxxx";
-            norm = "DINxxxx";
             mode = true;
             Schritt = 3;
             
@@ -99,12 +94,17 @@ namespace EoL_Automatik_Ladetest
             }
             if (lblCDSstatus.Text == "active" && status.ToString() != "active")
             {
-                if (prozess > 0 && prozess <= 6)
-                {
-                    if (pruefFeld == "PF1" || pruefFeld == "PF4") _testCaseHandler.SendCdsTestCaseResultRequest(0);
-                    if (pruefFeld == "PF2" || pruefFeld == "PF3") _testCaseHandler.SendCdsTestCaseResultRequest(1);
-                    if (prozess > 2) { TempWeiter.Start(); Console.WriteLine("00 ACTIVE EL TEMP"); }
+                //if (prozess > 0 && prozess <= 6)
+                //{
+                    // ESTOS DOS SE PUEDEN BORRAR ************************
+                    //if (pruefFeld == "PF1" || pruefFeld == "PF4") _testCaseHandler.SendCdsTestCaseResultRequest(0);
+                    //if (pruefFeld == "PF2" || pruefFeld == "PF3") _testCaseHandler.SendCdsTestCaseResultRequest(1);
+                if (prozess > 2 && Schritt >= 3) 
+                { 
+                    TempWeiter.Start();
+                    Console.WriteLine("00 ACTIVE EL TEMP");
                 }
+                //}
             }
             lblCDSstatus.Text = status.ToString();
         }
@@ -134,11 +134,15 @@ namespace EoL_Automatik_Ladetest
             }
             lblStatusVerbindung.Text = state.ToString();
             
-            //ConnectionState = state;
             if (state == CdsTestCaseLibrary.Enums.ConnectionState.Connected)
             {
                 _testCaseHandler.SendCdsSourceSinkRequest();
                 _testCaseHandler.SendCdsInfoRequest();
+                btnStarten.Enabled = true;
+            }
+            else
+            {
+                btnStarten.Enabled= false;
             }
             
         }
@@ -158,6 +162,7 @@ namespace EoL_Automatik_Ladetest
                 if (mode)
                 {
                     EoL_AutomatikTest();
+                    Console.WriteLine("00 LLAME A LA Fn EOL-Automatik");
                 }
                 else
                 {
@@ -168,60 +173,101 @@ namespace EoL_Automatik_Ladetest
             }
         }
 
-
-        private void startTimer(Int32 interval)
-        {
-
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             cbPruffeld.Text = "PF1";
             checkBoxERK.Checked = false;
             checkBoxNotaus.Checked = false;
 
-            checkBoxNotausTest.Checked = false;
-            checkBoxNotausTest.Enabled = false;
+            //checkBoxNotausTest.Checked = false;
+            //checkBoxNotausTest.Enabled = false;
 
-            checkBoxTurkontaktTest.Checked = true;
-            checkBoxTestLinks.Checked = true;
-            checkBoxIsoTestLinks.Checked = true;
-            checkBoxTestRechts.Checked = true;
-            checkBoxIsoTestRechts.Checked = true;
+            //checkBoxTurkontaktTest.Checked = true;
+            //checkBoxTestLinks.Checked = true;
+            //checkBoxIsoTestLinks.Checked = true;
+            //checkBoxTestRechts.Checked = true;
+            //checkBoxIsoTestRechts.Checked = true;
+
+            btnStarten.Enabled = false;
+            //btnStop.Enabled = false;
+            btnPDF.Enabled = false;
+
+            automatikToolStripMenuItem_Click(sender, e);
         }
 
         private void pruffeld1ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string aktuellIP = getIPAdresse("ipPF1");
             string neueIP = Interaction.InputBox("IP Prüffeld 1:", "Ändern IP Adresse", aktuellIP);
-            setIPAdresse("ipPF1",neueIP);
-            //cbPruffeld_SelectedIndexChanged(sender,e);
+            if (!string.IsNullOrEmpty(neueIP)) setIPAdresse("ipPF1",neueIP);
         }
 
         private void pruffeld2ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string aktuellIP = getIPAdresse("ipPF2");
             string neueIP = Interaction.InputBox("IP Prüffeld 2:", "Ändern IP Adresse", aktuellIP);
-            setIPAdresse("ipPF2", neueIP);
-            //cbPruffeld_SelectedIndexChanged(sender, e);
+            if (!string.IsNullOrEmpty(neueIP)) setIPAdresse("ipPF2", neueIP);
         }
 
         private void pruffeld3ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string aktuellIP = getIPAdresse("ipPF3");
             string neueIP = Interaction.InputBox("IP Prüffeld 3:", "Ändern IP Adresse", aktuellIP);
-            setIPAdresse("ipPF3", neueIP);
-            //cbPruffeld_SelectedIndexChanged(sender, e);
+            if (!string.IsNullOrEmpty(neueIP)) setIPAdresse("ipPF3", neueIP);
         }
 
         private void pruffeld4ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string aktuellIP = getIPAdresse("ipPF4");
             string neueIP = Interaction.InputBox("IP Prüffeld 4:", "Ändern IP Adresse", aktuellIP);
-            setIPAdresse("ipPF4", neueIP);
-            //cbPruffeld_SelectedIndexChanged(sender, e);
+            if (!string.IsNullOrEmpty(neueIP)) setIPAdresse("ipPF4", neueIP);
         }
 
+        private void automatikToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mode = true;
+            modeToolStripMenuItem.Text = Resources.mode_automatik;
+
+            if(checkBoxNotaus.Checked) checkBoxNotausTest.Checked = true;
+            else checkBoxNotausTest.Checked = false;
+            checkBoxNotausTest.Enabled = false;
+
+            checkBoxTurkontaktTest.Enabled = false;
+            checkBoxTurkontaktTest.Checked = true;
+
+            checkBoxTestLinks.Enabled = false;
+            checkBoxTestLinks.Checked = true;
+
+            checkBoxTestRechts.Enabled = false;
+            checkBoxTestRechts.Checked = true;
+
+            checkBoxIsoTestLinks.Enabled = false;
+            checkBoxIsoTestLinks.Checked = true;
+
+            checkBoxIsoTestRechts.Enabled=false;
+            checkBoxIsoTestRechts.Checked=true;
+
+        }
+
+        private void wartungToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            mode = false;
+            modeToolStripMenuItem.Text = Resources.mode_wartung;
+
+            checkBoxNotausTest.Enabled = true;
+
+            checkBoxTurkontaktTest.Enabled = true;
+
+            checkBoxTestLinks.Enabled = true;
+
+            checkBoxTestRechts.Enabled = true;
+
+            checkBoxIsoTestLinks.Enabled = true;
+
+            checkBoxIsoTestRechts.Enabled = true;
+
+        }
+        
         private void checkBoxERK_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxERK.Checked == true)
@@ -253,7 +299,7 @@ namespace EoL_Automatik_Ladetest
         {
             if (checkBoxNotaus.Checked == true)
             {
-                checkBoxNotausTest.Enabled = true;
+                if (!mode) checkBoxNotausTest.Enabled = true;
                 checkBoxNotausTest.Checked = true;
             }
             else
@@ -278,13 +324,6 @@ namespace EoL_Automatik_Ladetest
             return ConfigurationManager.AppSettings[pf];
         }
 
-        private void cbPruffeld_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //string pf = "ip" + cbPruffeld.Text;
-            //string ip = getIPAdresse(pf);
-            //ipAdresse = IPAddress.Parse(ip);
-        }
-
         public struct Test
         {
             public string name { get; set; }
@@ -292,9 +331,6 @@ namespace EoL_Automatik_Ladetest
             public bool testErfordelich { get; set; }
             public bool testBestanden { get; set; }
             public int testGearbeitet { get; set; }
-            public string spannung { get; set; }
-            public string strom { get; set; }
-            public string zeit { get; set; }
 
             public List<List<List<string>>> tabelleDatei { get; set; }
 
@@ -305,9 +341,6 @@ namespace EoL_Automatik_Ladetest
                 testErfordelich = erfordelich;
                 testBestanden = false;
                 testGearbeitet = 0;
-                spannung = null;
-                strom = null;
-                zeit = null;
                 tabelleDatei = new List<List<List<string>>>();
             }
         }
@@ -318,8 +351,6 @@ namespace EoL_Automatik_Ladetest
             public string CDS_SerialNumber { get; set; }
             public string CDS_FwVersion { get; set; }
             public string Sink { get; set; }
-            public string MaxDCPower { get; set; }
-            public string Norm { get; set; }
 
             public Test[] tests { get; set; }
 
@@ -330,8 +361,6 @@ namespace EoL_Automatik_Ladetest
                 CDS_SerialNumber = "--";
                 CDS_FwVersion = "--";
                 Sink = "--";
-                MaxDCPower = "--";
-                Norm = "--";
             }
 
         }
@@ -380,7 +409,7 @@ namespace EoL_Automatik_Ladetest
                         TexteHinzufuegen("CDS Fw Version: " + Charger.CDS_FwVersion);
                         TexteHinzufuegen("Senke: " + Charger.Sink);
                         TempWeiter.Start();
-                        Console.WriteLine("02 ACTIVE EL TEMP");
+                        Console.WriteLine("00 EoL-A => ACTIVE EL TEMP");
 
                         break;
                     
@@ -404,18 +433,19 @@ namespace EoL_Automatik_Ladetest
                                             if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
                                             {
                                                 Charger.tests[0].testGearbeitet++;
+                                                Console.Write("01,5  EoL-A => ACTIVE EL TEMP");
                                                 TempWeiter.Start();
                                             }
                                             else
                                             {
                                                 endProgram();
-                                                Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
+                                                Console.WriteLine("00 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                             }
                                         }
                                         else
                                         {
                                             TexteHinzufuegen(Resources.m_testStopt);
-                                            Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
+                                            Console.WriteLine("01 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                             endProgram();
                                         }
                                         
@@ -428,14 +458,14 @@ namespace EoL_Automatik_Ladetest
                                             Console.WriteLine("Se activo temporizador de Notaus test");
                                             TempWeiter.Interval = 60000;
                                             TempWeiter.Start();
-                                            Console.WriteLine("05 ACTIVE EL TEMP");
+                                            Console.WriteLine("01 EoL-A =>  ACTIVE EL TEMP");
                                             Charger.tests[0].testGearbeitet++;
                                         }
                                         else
                                         {
                                             Console.WriteLine("No se puede activar temporizador de Notaus test, porque el CDS aún no se ha iniciado");
                                             TempWeiter.Start();
-                                            Console.WriteLine("06 ACTIVE EL TEMP");
+                                            Console.WriteLine("02 EoL-A =>  ACTIVE EL TEMP");
                                         }
                                         break;
                                     case 2:
@@ -452,12 +482,12 @@ namespace EoL_Automatik_Ladetest
                                                 Charger.tests[0].testGearbeitet = 10;
                                                 TempWeiter.Interval = 3000;
                                                 TempWeiter.Start();
-                                                Console.WriteLine("07 ACTIVE EL TEMP");
+                                                Console.WriteLine("03 EoL-A =>  ACTIVE EL TEMP");
                                             }
                                             else
                                             {
                                                 endProgram();
-                                                Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
+                                                Console.WriteLine("02 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                             }
                                         }
                                         break;
@@ -478,12 +508,12 @@ namespace EoL_Automatik_Ladetest
                                     prozess++;
 
                                     TempWeiter.Start();
-                                    Console.WriteLine("10 ACTIVE EL TEMP");
+                                    Console.WriteLine("04 EoL-A =>  ACTIVE EL TEMP");
                                 }
                                 else
                                 {
                                     endProgram();
-                                    Console.WriteLine("03 LLAME A PARAR EL PROGRAMA");
+                                    Console.WriteLine("03 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                 }
                             }
                         }
@@ -491,504 +521,149 @@ namespace EoL_Automatik_Ladetest
                         {
                             prozess++;
                             TempWeiter.Start();
-                            Console.WriteLine("11 ACTIVE EL TEMP");
+                            Console.WriteLine("05 EoL-A =>  ACTIVE EL TEMP");
                         }
                         break;
-                    
+
                     //Türkontakt Test
                     case 2:
-                        if (Charger.tests[1].testErfordelich)
+                        if (Charger.tests[1].testGearbeitet < 10)
                         {
-                            if (Charger.tests[1].testGearbeitet < 10)
+                            switch (Charger.tests[1].testGearbeitet)
                             {
-                                switch (Charger.tests[1].testGearbeitet)
-                                {
-                                    case 0:
-                                        //empezar test
-                                        TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_starten);
-                                        Console.WriteLine("Intentar Iniciar Test");
-                                        if (Charger.tests[0].testErfordelich)
+                                case 0:
+                                    //empezar test
+                                    TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_starten);
+                                    Console.WriteLine("Intentar Iniciar Test");
+                                    if (Charger.tests[0].testErfordelich)
+                                    {
+                                        if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[1].name))
                                         {
-                                            if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[1].name))
-                                            {
-                                                Charger.tests[1].testGearbeitet++;
-                                                TempWeiter.Start();
-                                            }
-                                            else
-                                            {
-                                                endProgram();
-                                                Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-
-                                            if (antworte == DialogResult.OK)
-                                            {
-                                                Console.WriteLine("Intentar Iniciar Test");
-
-                                                if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
-                                                {
-                                                    Charger.tests[1].testGearbeitet++;
-                                                    TempWeiter.Start();
-                                                }
-                                                else
-                                                {
-                                                    endProgram();
-                                                    Console.WriteLine("02 LLAME A PARAR EL PROGRAMA");
-                                                }
-                                            }
-                                            else
-                                            {
-                                                TexteHinzufuegen(Resources.m_testStopt);
-                                                Console.WriteLine("00 LLAME A PARAR EL PROGRAMA");
-                                                endProgram();
-                                            }
-                                        }
-
-                                        break;
-                                    case 1:
-                                        //si activo --> activar temporizador
-                                        Console.WriteLine("Intentar Activar temporizador de Notaus test");
-                                        if (lblCDSstatus.Text == "active")
-                                        {
-                                            Console.WriteLine("Se activo temporizador de Notaus test");
-                                            TempWeiter.Interval = 60000;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("14 ACTIVE EL TEMP");
                                             Charger.tests[1].testGearbeitet++;
+                                            Console.WriteLine("05,5  EoL-A => ACTIVE TEMP");
+                                            TempWeiter.Start();
                                         }
                                         else
                                         {
-                                            Console.WriteLine("No se puede activar temporizador de Notaus test, porque el CDS aún no se ha iniciado");
-                                            TempWeiter.Start();
-                                            Console.WriteLine("15 ACTIVE EL TEMP");
+                                            endProgram();
+                                            Console.WriteLine("04 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                         }
-                                        break;
-                                    case 2:
-                                        //si activo y temporizador se desbordo --> solicitar presionar el boton
-                                        Console.WriteLine("El temporizador se desbordo");
-                                        if (lblCDSstatus.Text == "active")
+                                    }
+                                    else
+                                    {
+                                        antworte = MessageBox.Show(Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                                        if (antworte == DialogResult.OK)
                                         {
-                                            antworte = MessageBox.Show(Resources.m_tuerOeffnen + "\n" + Resources.m_f_errorFlagsLesen, Resources.tuerKontaktTest, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                            if (antworte == DialogResult.Yes)
+                                            Console.WriteLine("Intentar Iniciar Test");
+
+                                            if (testStarten(pruefFeld + "tna.cdpj", Charger.tests[0].name))
                                             {
                                                 Charger.tests[1].testGearbeitet++;
-                                                _testCaseHandler.StopTest();
-                                                Charger.tests[1].testGearbeitet = 10;
-                                                TempWeiter.Interval = 3000;
+                                                Console.WriteLine("05,6  EoL-A => ACTIVE TEMP");
                                                 TempWeiter.Start();
-                                                Console.WriteLine("16 ACTIVE EL TEMP");
                                             }
                                             else
                                             {
                                                 endProgram();
-                                                Console.WriteLine("04 LLAME A PARAR EL PROGRAMA");
+                                                Console.WriteLine("05 EoL-A =>  LLAME A PARAR EL PROGRAMA");
                                             }
                                         }
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                antworte = MessageBox.Show(Resources.m_tuerNormalisieren + "\n" + Resources.m_f_chargerGruen, Resources.tuerKontaktTest, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                                if (antworte == DialogResult.Yes)
-                                {
-                                    TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_bestanden);
-                                    Charger.tests[1].testBestanden = true;
+                                        else
+                                        {
+                                            TexteHinzufuegen(Resources.m_testStopt);
+                                            Console.WriteLine("06 EoL-A =>  LLAME A PARAR EL PROGRAMA");
+                                            endProgram();
+                                        }
+                                    }
 
-                                    TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_endet);
-                                    TexteHinzufuegen("  ");
-                                    prozess++;
-
-                                    TempWeiter.Start();
-                                    Console.WriteLine("19 ACTIVE EL TEMP");
-                                }
-                                else
-                                {
-                                    endProgram();
-                                    Console.WriteLine("05 LLAME A PARAR EL PROGRAMA");
-                                }
+                                    break;
+                                case 1:
+                                    //si activo --> activar temporizador
+                                    Console.WriteLine("Intentar Activar temporizador de Notaus test");
+                                    if (lblCDSstatus.Text == "active")
+                                    {
+                                        Console.WriteLine("Se activo temporizador de Notaus test");
+                                        TempWeiter.Interval = 60000;
+                                        TempWeiter.Start();
+                                        Console.WriteLine("06 EoL-A =>  ACTIVE EL TEMP");
+                                        Charger.tests[1].testGearbeitet++;
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("No se puede activar temporizador de Notaus test, porque el CDS aún no se ha iniciado");
+                                        TempWeiter.Start();
+                                        Console.WriteLine("07 EoL-A =>  ACTIVE EL TEMP");
+                                    }
+                                    break;
+                                case 2:
+                                    //si activo y temporizador se desbordo --> solicitar presionar el boton
+                                    Console.WriteLine("El temporizador se desbordo");
+                                    if (lblCDSstatus.Text == "active")
+                                    {
+                                        antworte = MessageBox.Show(Resources.m_tuerOeffnen + "\n" + Resources.m_f_errorFlagsLesen, Resources.tuerKontaktTest, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                                        if (antworte == DialogResult.Yes)
+                                        {
+                                            Charger.tests[1].testGearbeitet++;
+                                            _testCaseHandler.StopTest();
+                                            Charger.tests[1].testGearbeitet = 10;
+                                            TempWeiter.Interval = 3000;
+                                            TempWeiter.Start();
+                                            Console.WriteLine("08 EoL-A => ACTIVE EL TEMP");
+                                        }
+                                        else
+                                        {
+                                            endProgram();
+                                            Console.WriteLine("07 EoL-A => LLAME A PARAR EL PROGRAMA");
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
                         }
                         else
                         {
-                            prozess++;
-                            TempWeiter.Start();
-                            Console.WriteLine("20 ACTIVE EL TEMP");
-                        }
-                        break;
-                    
-                    //DC1 Ladetest
-                    case 3:
-                        //DC1 Ladetest
-                        if (DC1fullTest)
-                        {
-                            //DC1 Test complett
-                            if (Charger.tests[2].testGearbeitet == 0)
+                            antworte = MessageBox.Show(Resources.m_tuerNormalisieren + "\n" + Resources.m_f_chargerGruen, Resources.tuerKontaktTest, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                            if (antworte == DialogResult.Yes)
                             {
-                                //Iniciar Test
-                                TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
-                                antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_bestanden);
+                                Charger.tests[1].testBestanden = true;
 
-                                if (antworte == DialogResult.OK)
-                                {
-                                    string projectName = pruefFeld;
-                                    if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
-                                    if (erk) projectName = projectName + "Test1m.cdpj";
-                                    //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
-                                    else projectName = projectName + "Test5m.cdpj";
-                                    if (testStarten(projectName, Resources.DC1LadeTest))
-                                    {
-                                        Charger.tests[2].testGearbeitet = 1;
-
-                                        int cantidad = 1;
-                                        foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
-                                        {
-                                            List<List<string>> datei2 = new List<List<string>>();
-                                            foreach (Parameter p in _testCaseHandler.GetParameters(testCase, projectName))
-                                            {
-                                                string spName = p.ParamValues[0].Value;
-                                                string spValue = p.ParamValues[1].Value;
-                                                string spUnit = p.ParamValues[2].Value;
-
-                                                //TexteHinzufuegen(spName + ": " + spValue + spUnit);
-                                                datei2.Add(new List<string> { spName, spValue + spUnit });
-
-                                            }
-                                            //TexteHinzufuegen("------------------------");
-                                            // Obtener el último elemento de tabelleDatei si existe
-                                            var tabelleDatei = Charger.tests[2].tabelleDatei;
-                                            List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
-
-                                            // Comparar datei2 con el último elemento
-                                            if (lastDatei2 != null && AreListsEqual(datei2, lastDatei2))
-                                            {
-                                                // Si es igual, incrementar la cantidad
-                                                cantidad++;
-                                            }
-                                            else
-                                            {
-                                                // Si es diferente, agregar la línea con el número de ejecuciones al último elemento
-                                                if (lastDatei2 != null)
-                                                {
-                                                    lastDatei2.Add(new List<string> { "Number of executions", cantidad.ToString() });
-                                                }
-
-                                                // Reiniciar la cantidad y agregar el nuevo dato
-                                                cantidad = 1;
-
-                                                Charger.tests[2].tabelleDatei.Add(datei2);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        endProgram();
-                                    }
-                                }
-                                else
-                                {
-                                    TexteHinzufuegen(Resources.m_testStopt);
-                                    endProgram();
-                                    Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                }
-                            }
-                            else if (Charger.tests[2].testGearbeitet == 1)
-                            {
-                                Charger.tests[2].testBestanden = true;
-                                int testCase = 0;
-                                if (pruefFeld == "PF2" || pruefFeld == "PF3") testCase++;
-                                for (int i = testCase; i <= 3 + testCase; i++)
-                                {
-                                    _testCaseHandler.SendCdsTestCaseResultRequest(i);
-                                    if (_testCaseHandler.GetTestCaseResult().ToString() != "passed") Charger.tests[2].testBestanden = false;
-                                }
-                                if (Charger.tests[2].testBestanden) TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestanden);
-                                else TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestandenNicht);
-                                TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_endet);
+                                TexteHinzufuegen(Resources.tuerKontaktTest + " " + Resources.m_endet);
                                 TexteHinzufuegen("  ");
+                                prozess++;
 
-
-                                // Obtener el último elemento de tabelleDatei si existe
-                                var tabelleDatei2 = Charger.tests[2].tabelleDatei;
-                                List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
-                                Charger.tests[2].tabelleDatei.Remove(Charger.tests[2].tabelleDatei[tabelleDatei2.Count - 1]);
-                                Charger.tests[2].tabelleDatei[Charger.tests[2].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
-
-                                Charger.tests[3].testErfordelich = true;
-                                Charger.tests[3].testBestanden = Charger.tests[2].testBestanden;
-                                Charger.tests[3].tabelleDatei.Add(lastDatei01);
-                                Charger.tests[3].tabelleDatei[Charger.tests[3].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
-
-
-                                prozess = 5;
-                                //Charger.tests[3].testErfordelich = false;
                                 TempWeiter.Start();
-                            }
-                        }
-                        else
-                        {
-                            if (Charger.tests[2].testErfordelich)
-                            {
-                                if (Charger.tests[2].testGearbeitet < 10)
-                                {
-                                    if (tests[2].testGearbeitet == 0)
-                                    {
-                                        TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
-                                        antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-
-                                        if (antworte == DialogResult.OK)
-                                        {
-                                            tests[2].testGearbeitet++;
-                                            //prozess++;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("21 ACTIVE EL TEMP");
-                                            tests[2].testBestanden = true;
-                                        }
-                                        else
-                                        {
-                                            TexteHinzufuegen(Resources.m_testStopt);
-                                            endProgram();
-                                            Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                        }
-                                    }
-
-                                    if (tests[2].testGearbeitet > 0 && tests[2].testGearbeitet <= 3)
-                                    {
-                                        //List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                        //if (AvailableSinks.Count > 0)
-                                        //{
-                                            //for (var i = 0; i < AvailableSinks.Count; i++)
-                                            //{
-                                                //senke = AvailableSinks[i];
-
-                                            //}
-                                        //}
-                                        if (lblCDSstatus.Text == "inactive")
-                                        {
-                                            TexteHinzufuegen(Resources.DC1LadeTest + " " + tests[2].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                            Console.WriteLine(Resources.DC1LadeTest + " " + tests[2].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                            if (erk) _testCaseHandler.StartTest(pruefFeld + "lt1m.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                            else _testCaseHandler.StartTest(pruefFeld + "lt3m.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                            tests[2].testGearbeitet++;
-                                        }
-                                        else if (lblCDSstatus.Text == "error")
-                                        {
-                                            _testCaseHandler.ResetErrors();
-                                            _testCaseHandler.SendCdsSourceSinkRequest();
-                                            TempWeiter.Start();
-                                            Console.WriteLine("22 ACTIVE EL TEMP");
-                                        }
-                                        else
-                                        {
-                                            TempWeiter.Start();
-                                            Console.WriteLine("23 ACTIVE EL TEMP");
-                                        }
-
-                                        if (tests[2].testGearbeitet > 1)
-                                        {
-                                            if (tests[2].testBestanden)
-                                            {
-                                                if (testCaseResult == "passed") tests[2].testBestanden = true;
-                                                else tests[2].testBestanden = false;
-                                            }
-                                        }
-
-                                        //tests[2].testGearbeitet++;
-                                    }
-                                    else
-                                    {
-                                        tests[2].testGearbeitet = 10;
-                                        TempWeiter.Start();
-                                    }
-                                }
-                                else
-                                {
-                                    if (tests[2].testBestanden)
-                                    {
-                                        if (testCaseResult == "passed")
-                                        {
-                                            tests[2].testBestanden = true;
-                                            TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestanden);
-
-                                        }
-                                        else
-                                        {
-                                            tests[2].testBestanden = false;
-                                            TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestandenNicht);
-
-                                        }
-                                    }
-
-
-                                    //TEST
-                                    //prozess = 7;
-                                    prozess++;
-
-
-
-                                    TempWeiter.Start();
-                                }
+                                Console.WriteLine("09 EoL-A => ACTIVE EL TEMP");
                             }
                             else
                             {
-                                prozess++;
-                                TempWeiter.Start();
+                                endProgram();
+                                Console.WriteLine("08 EoL-A => LLAME A PARAR EL PROGRAMA");
                             }
-                        }
-                            break;
-                    
-                    //DC1 Isolationsprüfung
-                    case 4:
-                        //DC1 Isotest
-                        if (tests[3].testErfordelich)
-                        {
-                            if (tests[3].testGearbeitet < 10)
-                            {
-                                if (tests[3].testGearbeitet == 0)
-                                {
-                                    TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_starten);
-                                    if (!tests[2].testErfordelich)
-                                    {
-                                        antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-
-                                        if (antworte == DialogResult.OK)
-                                        {
-                                            tests[3].testGearbeitet++;
-                                            //prozess++;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("24 ACTIVE EL TEMP");
-                                            tests[3].testBestanden = true;
-                                        }
-                                        else
-                                        {
-                                            TexteHinzufuegen(Resources.m_testStopt);
-                                            endProgram();
-                                            Console.WriteLine("07 LLAME A PARAR EL PROGRAMA");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        tests[3].testGearbeitet++;
-                                        //prozess++;
-                                        TempWeiter.Start();
-                                        Console.WriteLine("25 ACTIVE EL TEMP");
-                                        tests[3].testBestanden = true;
-                                    }
-                                }
-                                else if (tests[3].testGearbeitet == 1)
-                                {
-                                    /*
-                                    List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                    if (AvailableSinks.Count > 0)
-                                    {
-                                        for (var i = 0; i < AvailableSinks.Count; i++)
-                                        {
-                                            senke = AvailableSinks[i];
-
-                                        }
-                                    }
-                                    */
-                                    if (lblCDSstatus.Text == "inactive")
-                                    {
-                                        TexteHinzufuegen(Resources.DC1IsoTest + " " + tests[3].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                        Console.WriteLine(Resources.DC1IsoTest + " " + tests[3].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                        _testCaseHandler.StartTest(pruefFeld + "it.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                        tests[3].testGearbeitet++;
-                                    }
-                                    else if (lblCDSstatus.Text == "error")
-                                    {
-                                        _testCaseHandler.ResetErrors();
-                                        _testCaseHandler.SendCdsSourceSinkRequest();
-                                        TempWeiter.Start();
-                                        Console.WriteLine("26 ACTIVE EL TEMP");
-                                    }
-                                    else
-                                    {
-                                        TempWeiter.Start();
-                                        Console.WriteLine("27 ACTIVE EL TEMP");
-                                    }
-                                }
-                                else
-                                {
-                                    tests[3].testGearbeitet = 10;
-                                    TempWeiter.Start();
-                                }
-                            }
-                            else
-                            {
-                                if (testCaseResult == "passed")
-                                {
-                                    tests[3].testBestanden = true;
-                                    TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestanden);
-                                }
-                                else
-                                {
-                                    tests[3].testBestanden = false;
-                                    TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestandenNicht);
-                                }
-
-                                //TEST
-                                //prozess = 7;
-                                prozess++;
-
-
-
-                                TempWeiter.Start();
-                            }
-                        }
-                        else
-                        {
-                            prozess++;
-                            TempWeiter.Start();
                         }
                         break;
                     
-                    //DC2 Ladetest
-                    case 5:
-                        //DC2 Ladetest
-                        if (DC2fullTest)
+                    //DC1 Ladetest + Isotest
+                    case 3:
+                        //DC1 Ladetest + Isotest
+                        if (Charger.tests[2].testGearbeitet == 0)
                         {
-                            //DC1 Test complett
-                            if (Charger.tests[4].testGearbeitet == 0)
-                            {
-                                //Iniciar Test
-                                TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
-                                if (Charger.tests[2].testGearbeitet == 2 && (pruefFeld == "PF2" || pruefFeld == "PF3"))
-                                {
-                                    Charger.tests[4].testGearbeitet = 1;
-                                    TempWeiter.Start();
-                                }
-                                else
-                                {
-                                    antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                                    if (antworte == DialogResult.OK)
-                                    {
-                                        Charger.tests[4].testGearbeitet = 1;
-                                        TempWeiter.Start();
-                                    }
-                                    else
-                                    {
-                                        TexteHinzufuegen(Resources.m_testStopt);
-                                        endProgram();
-                                        Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                    }
-                                }
-                            }
-                            else if (Charger.tests[4].testGearbeitet == 1)
+                            //Iniciar Test
+                            TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
+                            antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                            if (antworte == DialogResult.OK)
                             {
                                 string projectName = pruefFeld;
-                                if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
-                                //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                                if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
                                 if (erk) projectName = projectName + "Test1m.cdpj";
+                                //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
                                 else projectName = projectName + "Test5m.cdpj";
                                 if (testStarten(projectName, Resources.DC1LadeTest))
                                 {
-                                    Charger.tests[4].testGearbeitet = 2;
+                                    Charger.tests[2].testGearbeitet = 1;
 
                                     int cantidad = 1;
                                     foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
@@ -1000,13 +675,11 @@ namespace EoL_Automatik_Ladetest
                                             string spValue = p.ParamValues[1].Value;
                                             string spUnit = p.ParamValues[2].Value;
 
-                                            //TexteHinzufuegen(spName + ": " + spValue + spUnit);
                                             datei2.Add(new List<string> { spName, spValue + spUnit });
 
                                         }
-                                        //TexteHinzufuegen("------------------------");
                                         // Obtener el último elemento de tabelleDatei si existe
-                                        var tabelleDatei = Charger.tests[4].tabelleDatei;
+                                        var tabelleDatei = Charger.tests[2].tabelleDatei;
                                         List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
 
                                         // Comparar datei2 con el último elemento
@@ -1025,275 +698,193 @@ namespace EoL_Automatik_Ladetest
 
                                             // Reiniciar la cantidad y agregar el nuevo dato
                                             cantidad = 1;
-                                            Charger.tests[4].tabelleDatei.Add(datei2);
+
+                                            Charger.tests[2].tabelleDatei.Add(datei2);
                                         }
                                     }
-
                                 }
                                 else
                                 {
                                     endProgram();
-                                }
-                            }
-                            else if (Charger.tests[4].testGearbeitet == 2)
-                            {
-                                Charger.tests[4].testBestanden = true;
-                                int testCase = 0;
-
-                                if (pruefFeld == "PF2" || pruefFeld == "PF3") testCase++;
-                                for (int i = testCase; i <= 3 + testCase; i++)
-                                {
-                                    _testCaseHandler.SendCdsTestCaseResultRequest(i);
-                                    if (_testCaseHandler.GetTestCaseResult().ToString() != "passed") Charger.tests[4].testBestanden = false;
-                                }
-                                if (Charger.tests[4].testBestanden) TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestanden);
-                                else TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestandenNicht);
-                                TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_endet);
-                                TexteHinzufuegen("  ");
-
-
-                                // Obtener el último elemento de tabelleDatei si existe
-                                var tabelleDatei3 = Charger.tests[4].tabelleDatei;
-                                List<List<string>> lastDatei03 = tabelleDatei3.Count > 0 ? tabelleDatei3[tabelleDatei3.Count - 1] : null;
-                                Charger.tests[4].tabelleDatei.Remove(Charger.tests[4].tabelleDatei[tabelleDatei3.Count - 1]);
-                                Charger.tests[4].tabelleDatei[Charger.tests[4].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
-
-                                Charger.tests[5].testErfordelich = true;
-                                Charger.tests[5].testBestanden = Charger.tests[4].testBestanden;
-                                Charger.tests[5].tabelleDatei.Add(lastDatei03);
-                                Charger.tests[5].tabelleDatei[Charger.tests[5].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
-
-
-
-
-                                prozess = 7;
-                                //Charger.tests[5].testErfordelich = false;
-                                TempWeiter.Start();
-                            }
-                        }
-                        else
-                        {
-                            if (tests[4].testErfordelich)
-                            {
-                                if (tests[4].testGearbeitet < 10)
-                                {
-                                    if (tests[4].testGearbeitet == 0)
-                                    {
-                                        TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
-                                        antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-
-                                        if (antworte == DialogResult.OK)
-                                        {
-                                            tests[4].testGearbeitet++;
-                                            //prozess++;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("28 ACTIVE EL TEMP");
-                                            tests[4].testBestanden = true;
-                                        }
-                                        else
-                                        {
-                                            TexteHinzufuegen(Resources.m_testStopt);
-                                            endProgram();
-                                            Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                        }
-                                    }
-
-                                    if (tests[4].testGearbeitet > 0 && tests[4].testGearbeitet <= 3)
-                                    {
-                                        /*
-                                        List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                        if (AvailableSinks.Count > 0)
-                                        {
-                                            for (var i = 0; i < AvailableSinks.Count; i++)
-                                            {
-                                                senke = AvailableSinks[i];
-
-                                            }
-                                        }
-                                        */
-                                        if (lblCDSstatus.Text == "inactive")
-                                        {
-                                            TexteHinzufuegen(Resources.DC2LadeTest + " " + tests[4].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                            Console.WriteLine(Resources.DC2LadeTest + " " + tests[4].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                            if (erk) _testCaseHandler.StartTest(pruefFeld + "lt1m.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                            else _testCaseHandler.StartTest(pruefFeld + "lt3m.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                            tests[4].testGearbeitet++;
-                                        }
-                                        else if (lblCDSstatus.Text == "error")
-                                        {
-                                            _testCaseHandler.ResetErrors();
-                                            _testCaseHandler.SendCdsSourceSinkRequest();
-                                            TempWeiter.Start();
-                                            Console.WriteLine("29 ACTIVE EL TEMP");
-                                        }
-                                        else
-                                        {
-                                            TempWeiter.Start();
-                                            Console.WriteLine("30 ACTIVE EL TEMP");
-                                        }
-
-                                        if (tests[4].testGearbeitet > 1)
-                                        {
-                                            if (tests[4].testBestanden)
-                                            {
-                                                if (testCaseResult == "passed") tests[4].testBestanden = true;
-                                                else tests[4].testBestanden = false;
-                                            }
-                                        }
-
-                                        //tests[4].testGearbeitet++;
-                                    }
-                                    else
-                                    {
-                                        tests[4].testGearbeitet = 10;
-                                        TempWeiter.Start();
-                                    }
-                                }
-                                else
-                                {
-                                    if (tests[4].testBestanden)
-                                    {
-                                        if (testCaseResult == "passed")
-                                        {
-                                            tests[4].testBestanden = true;
-                                            TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_bestanden);
-                                        }
-                                        else
-                                        {
-                                            tests[4].testBestanden = false;
-                                            TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_bestandenNicht);
-                                        }
-                                    }
-
-
-                                    //TEST
-                                    //prozess = 7;
-                                    prozess++;
-
-
-
-                                    TempWeiter.Start();
+                                    Console.WriteLine("09 EoL-A => LLAME A PARAR EL PROGRAMA");
                                 }
                             }
                             else
                             {
-                                prozess++;
-                                TempWeiter.Start();
+                                TexteHinzufuegen(Resources.m_testStopt);
+                                endProgram();
+                                Console.WriteLine("10 EoL-A => LLAME A PARAR EL PROGRAMA");
                             }
+                        }
+                        else if (Charger.tests[2].testGearbeitet == 1)
+                        {
+                            Charger.tests[2].testBestanden = true;
+                            int testCase = 0;
+                            if (pruefFeld == "PF2" || pruefFeld == "PF3") testCase++;
+                            for (int i = testCase; i <= 3 + testCase; i++)
+                            {
+                                _testCaseHandler.SendCdsTestCaseResultRequest(i);
+                                if (_testCaseHandler.GetTestCaseResult().ToString() != "passed") Charger.tests[2].testBestanden = false;
+                            }
+                            string result;
+                            if (Charger.tests[2].testBestanden)
+                            {
+                                result = "passed";
+                                TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestanden);
+                            }
+                            else
+                            {
+                                result = "failed";
+                                TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestandenNicht);
+                            }
+                            TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_endet);
+                            TexteHinzufuegen("  ");
+
+
+                            // Obtener el último elemento de tabelleDatei si existe
+                            var tabelleDatei2 = Charger.tests[2].tabelleDatei;
+                            List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
+                            Charger.tests[2].tabelleDatei.Remove(Charger.tests[2].tabelleDatei[tabelleDatei2.Count - 1]);
+                            Charger.tests[2].tabelleDatei[Charger.tests[2].tabelleDatei.Count - 1].Add(new List<string> { "result", result });
+
+                            Charger.tests[3].testErfordelich = true;
+                            Charger.tests[3].testBestanden = Charger.tests[2].testBestanden;
+                            Charger.tests[3].tabelleDatei.Add(lastDatei01);
+                            Charger.tests[3].tabelleDatei[Charger.tests[3].tabelleDatei.Count - 1].Add(new List<string> { "result", result });
+
+                            prozess++;
+                            TempWeiter.Start();
                         }
                         break;
                     
-                    //DC2 Isolationsprüfung
-                    case 6:
-                        //DC2 Isotest
-                        if (tests[5].testErfordelich)
+                    //DC2 Ladetest + Isotest
+                    case 4:
+                        if (Charger.tests[4].testGearbeitet == 0)
                         {
-                            if (tests[5].testGearbeitet < 10)
+                            //Iniciar Test
+                            TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
+                            if (Charger.tests[2].testGearbeitet == 2 && (pruefFeld == "PF2" || pruefFeld == "PF3"))
                             {
-                                if (tests[5].testGearbeitet == 0)
-                                {
-                                    TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_starten);
-                                    if (!tests[4].testErfordelich)
-                                    {
-                                        antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                                        if (antworte == DialogResult.OK)
-                                        {
-                                            tests[5].testGearbeitet++;
-                                            //prozess++;
-                                            TempWeiter.Start();
-                                            Console.WriteLine("31 ACTIVE EL TEMP");
-                                            tests[5].testBestanden = true;
-                                        }
-                                        else
-                                        {
-                                            TexteHinzufuegen(Resources.m_testStopt);
-                                            endProgram();
-                                            Console.WriteLine("06 LLAME A PARAR EL PROGRAMA");
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        tests[5].testGearbeitet++;
-                                        //prozess++;
-                                        TempWeiter.Start();
-                                        Console.WriteLine("32 ACTIVE EL TEMP");
-                                        tests[5].testBestanden = true;
-                                    }
-
-                                }
-                                else if (tests[5].testGearbeitet == 1)
-                                {
-                                    /*
-                                    List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-                                    if (AvailableSinks.Count > 0)
-                                    {
-                                        for (var i = 0; i < AvailableSinks.Count; i++)
-                                        {
-                                            senke = AvailableSinks[i];
-
-                                        }
-                                    }
-                                    */
-                                    if (lblCDSstatus.Text == "inactive")
-                                    {
-                                        TexteHinzufuegen(Resources.DC2IsoTest + " " + tests[5].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                        Console.WriteLine(Resources.DC2IsoTest + " " + tests[5].testGearbeitet.ToString() + " " + Resources.m_starten);
-                                        _testCaseHandler.StartTest(pruefFeld + "it.cdpj", null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
-                                        tests[5].testGearbeitet++;
-                                    }
-                                    else if (lblCDSstatus.Text == "error")
-                                    {
-                                        _testCaseHandler.ResetErrors();
-                                        _testCaseHandler.SendCdsSourceSinkRequest();
-                                        TempWeiter.Start();
-                                        Console.WriteLine("33 ACTIVE EL TEMP");
-                                    }
-                                    else
-                                    {
-                                        TempWeiter.Start();
-                                        Console.WriteLine("34 ACTIVE EL TEMP");
-                                    }
-                                }
-                                else
-                                {
-                                    tests[5].testGearbeitet = 10;
-                                    TempWeiter.Start();
-                                }
+                                Charger.tests[4].testGearbeitet = 1;
+                                TempWeiter.Start();
                             }
                             else
                             {
-                                if (testCaseResult == "passed")
+                                antworte = MessageBox.Show(Resources.DC2 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                if (antworte == DialogResult.OK)
                                 {
-                                    tests[5].testBestanden = true;
-                                    TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestanden);
+                                    Charger.tests[4].testGearbeitet = 1;
+                                    TempWeiter.Start();
                                 }
                                 else
                                 {
-                                    tests[5].testBestanden = false;
-                                    TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestandenNicht);
+                                    TexteHinzufuegen(Resources.m_testStopt);
+                                    endProgram();
+                                    Console.WriteLine("11 EoL-A => LLAME A PARAR EL PROGRAMA");
                                 }
-
-                                //TEST
-                                //prozess = 7;
-                                prozess++;
-
-
-
-                                TempWeiter.Start();
                             }
                         }
-                        else
+                        else if (Charger.tests[4].testGearbeitet == 1)
                         {
+                            string projectName = pruefFeld;
+                            if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
+                            //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                            if (erk) projectName = projectName + "Test1m.cdpj";
+                            else projectName = projectName + "Test5m.cdpj";
+                            if (testStarten(projectName, Resources.DC1LadeTest))
+                            {
+                                Charger.tests[4].testGearbeitet = 2;
+
+                                int cantidad = 1;
+                                foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
+                                {
+                                    List<List<string>> datei2 = new List<List<string>>();
+                                    foreach (Parameter p in _testCaseHandler.GetParameters(testCase, projectName))
+                                    {
+                                        string spName = p.ParamValues[0].Value;
+                                        string spValue = p.ParamValues[1].Value;
+                                        string spUnit = p.ParamValues[2].Value;
+
+                                        datei2.Add(new List<string> { spName, spValue + spUnit });
+
+                                    }
+                                    // Obtener el último elemento de tabelleDatei si existe
+                                    var tabelleDatei = Charger.tests[4].tabelleDatei;
+                                    List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
+
+                                    // Comparar datei2 con el último elemento
+                                    if (lastDatei2 != null && AreListsEqual(datei2, lastDatei2))
+                                    {
+                                        // Si es igual, incrementar la cantidad
+                                        cantidad++;
+                                    }
+                                    else
+                                    {
+                                        // Si es diferente, agregar la línea con el número de ejecuciones al último elemento
+                                        if (lastDatei2 != null)
+                                        {
+                                            lastDatei2.Add(new List<string> { "Number of executions", cantidad.ToString() });
+                                        }
+
+                                        // Reiniciar la cantidad y agregar el nuevo dato
+                                        cantidad = 1;
+                                        Charger.tests[4].tabelleDatei.Add(datei2);
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                endProgram();
+                            }
+                        }
+                        else if (Charger.tests[4].testGearbeitet == 2)
+                        {
+                            Charger.tests[4].testBestanden = true;
+                            int testCase = 0;
+
+                            if (pruefFeld == "PF2" || pruefFeld == "PF3") testCase++;
+                            for (int i = testCase; i <= 3 + testCase; i++)
+                            {
+                                _testCaseHandler.SendCdsTestCaseResultRequest(i);
+                                if (_testCaseHandler.GetTestCaseResult().ToString() != "passed") Charger.tests[4].testBestanden = false;
+                            }
+                            string result;
+                            if (Charger.tests[4].testBestanden)
+                            {
+                                result = "passed";
+                                TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestanden);
+                            }
+                            else
+                            {
+                                result = "failed";
+                                TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestandenNicht);
+                            }
+                            TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_endet);
+                            TexteHinzufuegen("  ");
+
+                            // Obtener el último elemento de tabelleDatei si existe
+                            var tabelleDatei3 = Charger.tests[4].tabelleDatei;
+                            List<List<string>> lastDatei03 = tabelleDatei3.Count > 0 ? tabelleDatei3[tabelleDatei3.Count - 1] : null;
+                            Charger.tests[4].tabelleDatei.Remove(Charger.tests[4].tabelleDatei[tabelleDatei3.Count - 1]);
+                            Charger.tests[4].tabelleDatei[Charger.tests[4].tabelleDatei.Count - 1].Add(new List<string> { "result", result });
+
+                            Charger.tests[5].testErfordelich = true;
+                            Charger.tests[5].testBestanden = Charger.tests[4].testBestanden;
+                            Charger.tests[5].tabelleDatei.Add(lastDatei03);
+                            Charger.tests[5].tabelleDatei[Charger.tests[5].tabelleDatei.Count - 1].Add(new List<string> { "result", result });
+
+
                             prozess++;
                             TempWeiter.Start();
                         }
                         break;
                     
                     //end program
-                    case 7:
+                    case 5:
                         endProgram();
-                        Console.WriteLine("07 LLAME A PARAR EL PROGRAMA");
+                        Console.WriteLine("12 EoL-A => LLAME A PARAR EL PROGRAMA");
+                        btnPDF.Enabled = true;
                         break;
                     default:
                         break;
@@ -1306,14 +897,14 @@ namespace EoL_Automatik_Ladetest
                 if (CDSverloren > 3)
                 {
                     endProgram();
-                    Console.WriteLine("08 LLAME A PARAR EL PROGRAMA");
+                    Console.WriteLine("13 EoL-A => LLAME A PARAR EL PROGRAMA");
                 }
 
                 else
                 {
                     CDSverloren++;
                     TempWeiter.Start();
-                    Console.WriteLine("ULT ACTIVE EL TEMP");
+                    Console.WriteLine("10 EoL-A => ACTIVE EL TEMP");
                 }
             }
         }
@@ -2109,7 +1700,6 @@ namespace EoL_Automatik_Ladetest
                     if (lblCDSstatus.Text == "inactive")
                     {
                         // Iniciar Test
-                        //_testCaseHandler.ResetErrors();
                         TexteHinzufuegen("Project: " + projectName);
                         Console.WriteLine(testName + " " + Resources.m_starten + " project: " + projectName);
                         _testCaseHandler.StartTest(projectName, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
@@ -2509,201 +2099,6 @@ namespace EoL_Automatik_Ladetest
             //PDFerstellen2();
         }
 
-        /*
-        private void PDFerstellen2()
-        {
-            // Ruta del archivo PDF a generar
-            string pdfFilePath = "C:\\Users\\z004kszj\\Desktop\\Probando reportes\\report.pdf";
-
-            // Crear un nuevo documento PDF
-            PdfDocument pdf = new PdfDocument();
-            pdf.Info.Title = "Reporte";
-
-            // Crear una nueva página en el PDF
-            PdfPage pdfPage = pdf.AddPage();
-            XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
-            XFont font = new XFont("Verdana", 12, XFontStyleEx.Regular);
-
-            // Inicializar la posición del texto
-            double yPoint = 40;
-
-            // Agregar el contenido del reporte
-            gfx.DrawString("Report Information", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Charger S/N.: «SERIAL_NUMBER_CHARGER»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Test result: «TOTAL_RESULT»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Execution date: «DATE»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 40;
-
-            gfx.DrawString("System information", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CDS Serial Number: «SERIAL_NUMBER_CDS»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CDS Firmware Version: «CDS_FW_VERSION»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Sink: «SINK»", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 40;
-
-            gfx.DrawString("Test details", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Door contact test", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Test Case Project: PF1tna.cdpj", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Error flags: correct", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 40;
-
-            gfx.DrawString("DC1 charging test", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Test Case project: PF1Test5m.cdpj", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Quantity: 3 x 5 minutes + isolations test", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Parameter:", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Charging test:", font, XBrushes.Black,
-                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarCurrent: 18A", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("TimerTestDuration: 300s", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 40;
-
-            gfx.DrawString("Isolations test:", font, XBrushes.Black,
-                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarCurrent: 10A", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("RE_Warning: 400000Ohm", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("RE_Fault: 90000Ohm", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("IsoTime: 10s", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 40;
-
-            gfx.DrawString("DC2 charging test", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Test Case project: PF1Test5m.cdpj", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Quantity: 3 x 5 minutes + isolations test", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Parameter:", font, XBrushes.Black,
-                new XRect(0, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("Charging test:", font, XBrushes.Black,
-                new XRect(20, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarVoltage: 550V", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("CarCurrent: 18A", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-            yPoint += 20;
-
-            gfx.DrawString("TimerTestDuration: 300s", font, XBrushes.Black,
-                new XRect(40, yPoint, pdfPage.Width.Point, pdfPage.Height.Point),
-                XStringFormats.TopLeft);
-
-            // Guardar el documento PDF
-            pdf.Save(pdfFilePath);
-
-            Console.WriteLine("El reporte en PDF ha sido generado y guardado como 'report'");
-        }
-        */
-
         // Método para comparar dos listas de listas de cadenas
         private bool AreListsEqual(List<List<string>> list1, List<List<string>> list2)
         {
@@ -2853,5 +2248,7 @@ namespace EoL_Automatik_Ladetest
 
 
         }
+
+        
     }
 }

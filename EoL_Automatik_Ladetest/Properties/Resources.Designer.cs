@@ -322,6 +322,24 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Mode: Automatik ähnelt.
+        /// </summary>
+        internal static string mode_automatik {
+            get {
+                return ResourceManager.GetString("mode_automatik", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Mode: Wartung ähnelt.
+        /// </summary>
+        internal static string mode_wartung {
+            get {
+                return ResourceManager.GetString("mode_wartung", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Notaustest ähnelt.
         /// </summary>
         internal static string notAusTest {

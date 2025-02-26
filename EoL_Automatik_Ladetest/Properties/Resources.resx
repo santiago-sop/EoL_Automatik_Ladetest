@@ -210,4 +210,10 @@
   <data name="ergebnis" xml:space="preserve">
     <value>Ergebnis</value>
   </data>
+  <data name="mode_automatik" xml:space="preserve">
+    <value>Mode: Automatik</value>
+  </data>
+  <data name="mode_wartung" xml:space="preserve">
+    <value>Mode: Wartung</value>
+  </data>
 </root>

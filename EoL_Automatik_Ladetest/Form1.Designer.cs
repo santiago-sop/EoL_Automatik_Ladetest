@@ -47,6 +47,9 @@
             this.pruffeld2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pruffeld3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pruffeld4ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.automatikToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wartungToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tBNachrichten = new System.Windows.Forms.TextBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.gbCDS = new System.Windows.Forms.GroupBox();
@@ -79,7 +82,6 @@
             this.cbPruffeld.Name = "cbPruffeld";
             this.cbPruffeld.Size = new System.Drawing.Size(121, 24);
             this.cbPruffeld.TabIndex = 0;
-            this.cbPruffeld.SelectedIndexChanged += new System.EventHandler(this.cbPruffeld_SelectedIndexChanged);
             // 
             // lblPruffeld
             // 
@@ -226,7 +228,8 @@
             // 
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.modeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(826, 28);
@@ -272,6 +275,29 @@
             this.pruffeld4ToolStripMenuItem.Text = "Prüffeld 4";
             this.pruffeld4ToolStripMenuItem.Click += new System.EventHandler(this.pruffeld4ToolStripMenuItem_Click);
             // 
+            // modeToolStripMenuItem
+            // 
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.automatikToolStripMenuItem,
+            this.wartungToolStripMenuItem});
+            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(138, 24);
+            this.modeToolStripMenuItem.Text = "Mode: Automatik";
+            // 
+            // automatikToolStripMenuItem
+            // 
+            this.automatikToolStripMenuItem.Name = "automatikToolStripMenuItem";
+            this.automatikToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.automatikToolStripMenuItem.Text = "Automatik";
+            this.automatikToolStripMenuItem.Click += new System.EventHandler(this.automatikToolStripMenuItem_Click);
+            // 
+            // wartungToolStripMenuItem
+            // 
+            this.wartungToolStripMenuItem.Name = "wartungToolStripMenuItem";
+            this.wartungToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.wartungToolStripMenuItem.Text = "Wartung";
+            this.wartungToolStripMenuItem.Click += new System.EventHandler(this.wartungToolStripMenuItem_Click);
+            // 
             // tBNachrichten
             // 
             this.tBNachrichten.Location = new System.Drawing.Point(98, 482);
@@ -316,6 +342,7 @@
             this.lblResult.Size = new System.Drawing.Size(107, 16);
             this.lblResult.TabIndex = 14;
             this.lblResult.Text = "TestCase Result";
+            this.lblResult.Visible = false;
             // 
             // lblCDSstatus
             // 
@@ -330,7 +357,7 @@
             // 
             this.btnCDSReset.Location = new System.Drawing.Point(10, 95);
             this.btnCDSReset.Name = "btnCDSReset";
-            this.btnCDSReset.Size = new System.Drawing.Size(83, 23);
+            this.btnCDSReset.Size = new System.Drawing.Size(100, 23);
             this.btnCDSReset.TabIndex = 12;
             this.btnCDSReset.Text = "Reset";
             this.btnCDSReset.UseVisualStyleBackColor = true;
@@ -340,7 +367,7 @@
             // 
             this.btnCDSTrennen.Location = new System.Drawing.Point(10, 66);
             this.btnCDSTrennen.Name = "btnCDSTrennen";
-            this.btnCDSTrennen.Size = new System.Drawing.Size(83, 23);
+            this.btnCDSTrennen.Size = new System.Drawing.Size(100, 23);
             this.btnCDSTrennen.TabIndex = 11;
             this.btnCDSTrennen.Text = "Trennen";
             this.btnCDSTrennen.UseVisualStyleBackColor = true;
@@ -350,7 +377,7 @@
             // 
             this.btnCDSVerbinden.Location = new System.Drawing.Point(10, 37);
             this.btnCDSVerbinden.Name = "btnCDSVerbinden";
-            this.btnCDSVerbinden.Size = new System.Drawing.Size(83, 23);
+            this.btnCDSVerbinden.Size = new System.Drawing.Size(100, 23);
             this.btnCDSVerbinden.TabIndex = 10;
             this.btnCDSVerbinden.Text = "Verbinden";
             this.btnCDSVerbinden.UseVisualStyleBackColor = true;
@@ -473,6 +500,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox tbFA;
         private System.Windows.Forms.Label lblFA;
+        private System.Windows.Forms.ToolStripMenuItem modeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem automatikToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wartungToolStripMenuItem;
     }
 }
 
