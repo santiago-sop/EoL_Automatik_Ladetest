@@ -19,6 +19,7 @@ using CdsTestCaseLibrary.Models.Project;
 //using static EoL_Automatik_Ladetest.Form1;
 using PdfSharp.Pdf;
 using PdfSharp.Drawing;
+using System.Linq;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -47,6 +48,7 @@ namespace EoL_Automatik_Ladetest
         private bool mode;
         private bool DC1fullTest = true;
         private bool DC2fullTest = true;
+        int Schritt;
 
         public Form1()
         {
@@ -56,14 +58,15 @@ namespace EoL_Automatik_Ladetest
             serie_number_charger = "17000xxxx";
             norm = "DINxxxx";
             mode = true;
+            Schritt = 3;
             
             // -- Struct TESTS --
-            tests[0] = new Test(Resources.notAusTest, false);
-            tests[1] = new Test(Resources.tuerKontaktTest, true);
-            tests[2] = new Test(Resources.DC1LadeTest, true);
-            tests[3] = new Test(Resources.DC1IsoTest, true);
-            tests[4] = new Test(Resources.DC2LadeTest, true);
-            tests[5] = new Test(Resources.DC2IsoTest, true);
+            tests[0] = new Test(Resources.notAusTest, "Emergency button test" , false);
+            tests[1] = new Test(Resources.tuerKontaktTest, "Door contact test" , true);
+            tests[2] = new Test(Resources.DC1LadeTest, "DC1 charging test" , true);
+            tests[3] = new Test(Resources.DC1IsoTest, "DC1 isolation test" , true);
+            tests[4] = new Test(Resources.DC2LadeTest, "DC2 charging test" , true);
+            tests[5] = new Test(Resources.DC2IsoTest, "DC2 isolation test" , true);
 
 
             // -- TestCase Handler --
@@ -163,6 +166,12 @@ namespace EoL_Automatik_Ladetest
                 }
                 
             }
+        }
+
+
+        private void startTimer(Int32 interval)
+        {
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -279,6 +288,7 @@ namespace EoL_Automatik_Ladetest
         public struct Test
         {
             public string name { get; set; }
+            public string englishName { get; set; }
             public bool testErfordelich { get; set; }
             public bool testBestanden { get; set; }
             public int testGearbeitet { get; set; }
@@ -288,9 +298,10 @@ namespace EoL_Automatik_Ladetest
 
             public List<List<List<string>>> tabelleDatei { get; set; }
 
-            public Test(string testname, bool erfordelich)
+            public Test(string testname, string eName, bool erfordelich)
             {
                 name = testname;
+                englishName = eName;
                 testErfordelich = erfordelich;
                 testBestanden = false;
                 testGearbeitet = 0;
@@ -627,14 +638,14 @@ namespace EoL_Automatik_Ladetest
                                 {
                                     string projectName = pruefFeld;
                                     if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Left";
-                                    //if (erk) projectName = projectName + "Test1m.cdpj";
-                                    if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                                    if (erk) projectName = projectName + "Test1m.cdpj";
+                                    //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
                                     else projectName = projectName + "Test5m.cdpj";
                                     if (testStarten(projectName, Resources.DC1LadeTest))
                                     {
                                         Charger.tests[2].testGearbeitet = 1;
 
-                                        //int j = 0;
+                                        int cantidad = 1;
                                         foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
                                         {
                                             List<List<string>> datei2 = new List<List<string>>();
@@ -644,13 +655,34 @@ namespace EoL_Automatik_Ladetest
                                                 string spValue = p.ParamValues[1].Value;
                                                 string spUnit = p.ParamValues[2].Value;
 
-                                                TexteHinzufuegen(spName + ": " + spValue + spUnit);
+                                                //TexteHinzufuegen(spName + ": " + spValue + spUnit);
                                                 datei2.Add(new List<string> { spName, spValue + spUnit });
-                                                //Charger.tests[2].tabelleDatei.Add(datei2);
 
                                             }
-                                            TexteHinzufuegen("------------------------");
-                                            Charger.tests[2].tabelleDatei.Add(datei2);
+                                            //TexteHinzufuegen("------------------------");
+                                            // Obtener el último elemento de tabelleDatei si existe
+                                            var tabelleDatei = Charger.tests[2].tabelleDatei;
+                                            List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
+
+                                            // Comparar datei2 con el último elemento
+                                            if (lastDatei2 != null && AreListsEqual(datei2, lastDatei2))
+                                            {
+                                                // Si es igual, incrementar la cantidad
+                                                cantidad++;
+                                            }
+                                            else
+                                            {
+                                                // Si es diferente, agregar la línea con el número de ejecuciones al último elemento
+                                                if (lastDatei2 != null)
+                                                {
+                                                    lastDatei2.Add(new List<string> { "Number of executions", cantidad.ToString() });
+                                                }
+
+                                                // Reiniciar la cantidad y agregar el nuevo dato
+                                                cantidad = 1;
+
+                                                Charger.tests[2].tabelleDatei.Add(datei2);
+                                            }
                                         }
                                     }
                                     else
@@ -679,8 +711,22 @@ namespace EoL_Automatik_Ladetest
                                 else TexteHinzufuegen(Charger.tests[2].name + " " + Resources.m_bestandenNicht);
                                 TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_endet);
                                 TexteHinzufuegen("  ");
+
+
+                                // Obtener el último elemento de tabelleDatei si existe
+                                var tabelleDatei2 = Charger.tests[2].tabelleDatei;
+                                List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
+                                Charger.tests[2].tabelleDatei.Remove(Charger.tests[2].tabelleDatei[tabelleDatei2.Count - 1]);
+                                Charger.tests[2].tabelleDatei[Charger.tests[2].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+                                Charger.tests[3].testErfordelich = true;
+                                Charger.tests[3].testBestanden = Charger.tests[2].testBestanden;
+                                Charger.tests[3].tabelleDatei.Add(lastDatei01);
+                                Charger.tests[3].tabelleDatei[Charger.tests[3].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+
                                 prozess = 5;
-                                Charger.tests[3].testErfordelich = false;
+                                //Charger.tests[3].testErfordelich = false;
                                 TempWeiter.Start();
                             }
                         }
@@ -937,13 +983,14 @@ namespace EoL_Automatik_Ladetest
                             {
                                 string projectName = pruefFeld;
                                 if (pruefFeld == "PF2" || pruefFeld == "PF3") projectName = projectName + "Right";
-                                if (erk) projectName = projectName + "Test1mPrueba.cdpj";
-                                //if (erk) projectName = projectName + "Test1m.cdpj";
+                                //if (erk) projectName = projectName + "Test1mPrueba.cdpj";
+                                if (erk) projectName = projectName + "Test1m.cdpj";
                                 else projectName = projectName + "Test5m.cdpj";
                                 if (testStarten(projectName, Resources.DC1LadeTest))
                                 {
                                     Charger.tests[4].testGearbeitet = 2;
 
+                                    int cantidad = 1;
                                     foreach (string testCase in _testCaseHandler.GetTestCases(projectName))
                                     {
                                         List<List<string>> datei2 = new List<List<string>>();
@@ -953,12 +1000,33 @@ namespace EoL_Automatik_Ladetest
                                             string spValue = p.ParamValues[1].Value;
                                             string spUnit = p.ParamValues[2].Value;
 
-                                            TexteHinzufuegen(spName + ": " + spValue + spUnit);
+                                            //TexteHinzufuegen(spName + ": " + spValue + spUnit);
                                             datei2.Add(new List<string> { spName, spValue + spUnit });
 
                                         }
-                                        TexteHinzufuegen("------------------------");
-                                        Charger.tests[4].tabelleDatei.Add(datei2);
+                                        //TexteHinzufuegen("------------------------");
+                                        // Obtener el último elemento de tabelleDatei si existe
+                                        var tabelleDatei = Charger.tests[4].tabelleDatei;
+                                        List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
+
+                                        // Comparar datei2 con el último elemento
+                                        if (lastDatei2 != null && AreListsEqual(datei2, lastDatei2))
+                                        {
+                                            // Si es igual, incrementar la cantidad
+                                            cantidad++;
+                                        }
+                                        else
+                                        {
+                                            // Si es diferente, agregar la línea con el número de ejecuciones al último elemento
+                                            if (lastDatei2 != null)
+                                            {
+                                                lastDatei2.Add(new List<string> { "Number of executions", cantidad.ToString() });
+                                            }
+
+                                            // Reiniciar la cantidad y agregar el nuevo dato
+                                            cantidad = 1;
+                                            Charger.tests[4].tabelleDatei.Add(datei2);
+                                        }
                                     }
 
                                 }
@@ -971,6 +1039,7 @@ namespace EoL_Automatik_Ladetest
                             {
                                 Charger.tests[4].testBestanden = true;
                                 int testCase = 0;
+
                                 if (pruefFeld == "PF2" || pruefFeld == "PF3") testCase++;
                                 for (int i = testCase; i <= 3 + testCase; i++)
                                 {
@@ -981,8 +1050,24 @@ namespace EoL_Automatik_Ladetest
                                 else TexteHinzufuegen(Charger.tests[4].name + " " + Resources.m_bestandenNicht);
                                 TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_endet);
                                 TexteHinzufuegen("  ");
+
+
+                                // Obtener el último elemento de tabelleDatei si existe
+                                var tabelleDatei3 = Charger.tests[4].tabelleDatei;
+                                List<List<string>> lastDatei03 = tabelleDatei3.Count > 0 ? tabelleDatei3[tabelleDatei3.Count - 1] : null;
+                                Charger.tests[4].tabelleDatei.Remove(Charger.tests[4].tabelleDatei[tabelleDatei3.Count - 1]);
+                                Charger.tests[4].tabelleDatei[Charger.tests[4].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+                                Charger.tests[5].testErfordelich = true;
+                                Charger.tests[5].testBestanden = Charger.tests[4].testBestanden;
+                                Charger.tests[5].tabelleDatei.Add(lastDatei03);
+                                Charger.tests[5].tabelleDatei[Charger.tests[5].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+
+
+
                                 prozess = 7;
-                                Charger.tests[5].testErfordelich = false;
+                                //Charger.tests[5].testErfordelich = false;
                                 TempWeiter.Start();
                             }
                         }
@@ -1232,6 +1317,7 @@ namespace EoL_Automatik_Ladetest
                 }
             }
         }
+        
         private void EoL_LadeTest()
         {
             if(lblStatusVerbindung.Text == "Connected")
@@ -2012,18 +2098,9 @@ namespace EoL_Automatik_Ladetest
 
         private bool testStarten(string projectName, string testName)
         {
-            int Schritt = 1;
+            Schritt = 1;
             bool erfoglichStart = false;
             int Versuch = 0;
-
-            //List<CdsTestCaseLibrary.Models.SourceSink> AvailableSinks = _testCaseHandler.GetSinks();
-            //if (AvailableSinks.Count > 0)
-            //{
-                //for (var i = 0; i < AvailableSinks.Count; i++)
-                //{
-                    //senke = AvailableSinks[i];
-                //}
-            //}
 
             while (Schritt < 3)
             {
@@ -2037,8 +2114,6 @@ namespace EoL_Automatik_Ladetest
                         Console.WriteLine(testName + " " + Resources.m_starten + " project: " + projectName);
                         _testCaseHandler.StartTest(projectName, null, senke, CdsTestCaseLibrary.Enums.ControlMode.Test, "SICHARGE_D_350_kW_Prototype.evse");
                         Schritt = 2;
-
-                        
 
                         Thread.Sleep(5000);
                     }
@@ -2156,6 +2231,7 @@ namespace EoL_Automatik_Ladetest
         {
             int p_ = prozess;
             prozess = 0;
+            Schritt = 3;
             TempWeiter.Stop();
             _testCaseHandler.StopTest();
             if (p_ > 0)
@@ -2293,22 +2369,27 @@ namespace EoL_Automatik_Ladetest
                         {
                             if (test.name.Contains(Resources.tuerKontaktTest) || test.name.Contains(Resources.notAusTest))
                             {
-                                var tabelleDatei = new TabelleDatei(test.name, new List<List<string>>
+                                string result;
+                                if (test.testBestanden) result = "passed";
+                                else result = "failed";
+                                var tabelleDatei = new TabelleDatei(test.englishName, new List<List<string>>
                                 {
-                                    new List<string> { "Result", test.testBestanden.ToString()}
+                                    new List<string> { "Result", result}
                                 });
                                 TabelleHinzufuegen(wordDoc, tabelleDatei, true);
                             }
-                            else if (test.name.Contains("Ladetest"))
+                            else if (test.name.Contains("Ladetest") || test.name.Contains("Isolation"))
                             {
                                 bool titel = true;
                                 foreach (List<List<string>> strings in test.tabelleDatei)
                                 {
-                                    TabelleHinzufuegen(wordDoc, new TabelleDatei(test.name, strings), titel);
-                                    titel = false;
+                                    if (strings.Count > 1)
+                                    {
+                                        TabelleHinzufuegen(wordDoc, new TabelleDatei(test.englishName, strings), titel);
+                                        titel = false;
+                                    }
                                 }
                             }
-
                         }
                     }
                     // Guardar el documento de Word como PDF
@@ -2325,7 +2406,7 @@ namespace EoL_Automatik_Ladetest
                     {
                         Paragraph paragraph = wordDoc.Paragraphs[i];
                         //if (paragraph.Range.Text.Contains(Resources.notAusTest) || paragraph.Range.Text.Contains(Resources.tuerKontaktTest) || paragraph.Range.Text.Contains(Resources.DC1LadeTest) || paragraph.Range.Text.Contains(Resources.DC2LadeTest))
-                        if (paragraph.Range.Text.Contains(Resources.notAusTest) || paragraph.Range.Text.Contains(Resources.tuerKontaktTest) || paragraph.Range.Text.Contains(Resources.DC1LadeTest) || paragraph.Range.Text.Contains(Resources.DC2LadeTest))
+                        if (paragraph.Range.Text.Contains(Charger.tests[0].englishName) || paragraph.Range.Text.Contains(Charger.tests[1].englishName) || paragraph.Range.Text.Contains(Charger.tests[2].englishName) || paragraph.Range.Text.Contains(Charger.tests[3].englishName) || paragraph.Range.Text.Contains(Charger.tests[4].englishName) || paragraph.Range.Text.Contains(Charger.tests[5].englishName))
                         {
                             //paragraph.Range.Delete();
                             if (i <= wordDoc.Paragraphs.Count)
@@ -2622,6 +2703,27 @@ namespace EoL_Automatik_Ladetest
             Console.WriteLine("El reporte en PDF ha sido generado y guardado como 'report'");
         }
         */
+
+        // Método para comparar dos listas de listas de cadenas
+        private bool AreListsEqual(List<List<string>> list1, List<List<string>> list2)
+        {
+            if (list1.Count != list2.Count)
+                return false;
+
+            for (int i = 0; i < list1.Count; i++)
+            {
+                if (list1[i].Count != list2[i].Count)
+                    return false;
+
+                for (int j = 0; j < list1[i].Count; j++)
+                {
+                    if (list1[i][j] != list2[i][j])
+                        return false;
+                }
+            }
+
+            return true;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             for (int i = 0; i < 6; i++)
@@ -2660,7 +2762,8 @@ namespace EoL_Automatik_Ladetest
           
             List<List<List<string>>> pruebaLista = new List<List<List<string>>>();
 
-            
+            int cantidad = 1;
+
             foreach (string testCase in _testCaseHandler.GetTestCases(pr))
             {
                 List<List<string>> datei2 = new List<List<string>>();
@@ -2672,13 +2775,64 @@ namespace EoL_Automatik_Ladetest
 
                     TexteHinzufuegen(spName + ": " + spValue + spUnit);
                     datei2.Add(new List<string> { spName, spValue + spUnit });
-                    //Charger.tests[2].tabelleDatei.Add(datei2);
                 }
                 TexteHinzufuegen("------------------------");
                 pruebaLista.Add(datei2);
-                Charger.tests[2].tabelleDatei.Add(datei2);
-                Charger.tests[4].tabelleDatei.Add(datei2);
+                //Charger.tests[2].tabelleDatei.Add(datei2);
+                //Charger.tests[4].tabelleDatei.Add(datei2);
+                
+                // Obtener el último elemento de tabelleDatei si existe
+                var tabelleDatei = Charger.tests[2].tabelleDatei;
+                List<List<string>> lastDatei2 = tabelleDatei.Count > 0 ? tabelleDatei[tabelleDatei.Count - 1] : null;
+
+                // Comparar datei2 con el último elemento
+                if (lastDatei2 != null && AreListsEqual(datei2, lastDatei2))
+                {
+                    // Si es igual, incrementar la cantidad
+                    cantidad++;
+                }
+                else
+                {
+                    // Si es diferente, agregar la línea con el número de ejecuciones al último elemento
+                    if (lastDatei2 != null)
+                    {
+                        lastDatei2.Add(new List<string> { "Number of executions", cantidad.ToString() });
+                    }
+
+                    // Reiniciar la cantidad y agregar el nuevo dato
+                    cantidad = 1;
+                    
+                    Charger.tests[2].tabelleDatei.Add(datei2);
+                    Charger.tests[4].tabelleDatei.Add(datei2);
+                    
+                }
             }
+
+            // Obtener el último elemento de tabelleDatei si existe
+            var tabelleDatei2 = Charger.tests[2].tabelleDatei;
+            List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
+            Charger.tests[2].tabelleDatei.Remove(Charger.tests[2].tabelleDatei[tabelleDatei2.Count - 1]);
+            //Charger.tests[2].tabelleDatei[Charger.tests[2].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+            Charger.tests[3].testErfordelich = true;
+            Charger.tests[3].tabelleDatei.Add(lastDatei01);
+            //Charger.tests[3].tabelleDatei[Charger.tests[3].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+
+
+
+            // Obtener el último elemento de tabelleDatei si existe
+            var tabelleDatei3 = Charger.tests[4].tabelleDatei;
+            List<List<string>> lastDatei03 = tabelleDatei3.Count > 0 ? tabelleDatei3[tabelleDatei3.Count - 1] : null;
+            Charger.tests[4].tabelleDatei.Remove(Charger.tests[4].tabelleDatei[tabelleDatei3.Count - 1]);
+            //Charger.tests[4].tabelleDatei[Charger.tests[4].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+            Charger.tests[5].testErfordelich = true;
+            Charger.tests[5].tabelleDatei.Add(lastDatei03);
+            Charger.tests[5].tabelleDatei[Charger.tests[5].tabelleDatei.Count - 1].Add(new List<string> { "result", "passed" });
+
+
+
             TexteHinzufuegen("+++++++++++++++++++++++++++");
             int j = 1;
             foreach (List<List<string>> s in pruebaLista)
