@@ -729,6 +729,7 @@ namespace EoL_Automatik_Ladetest
                             for (int i = testCase; i <= 2 + testCase; i++)
                             {
                                 _testCaseHandler.SendCdsTestCaseResultRequest(i);
+                                Console.WriteLine(_testCaseHandler.GetTestCaseResult().ToString());
                                 if (_testCaseHandler.GetTestCaseResult().ToString() != "passed")
                                 {
                                     Charger.tests[2].testBestanden = false;
@@ -850,13 +851,16 @@ namespace EoL_Automatik_Ladetest
                             for (int i = testCase; i <= 2 + testCase; i++)
                             {
                                 _testCaseHandler.SendCdsTestCaseResultRequest(i);
+                                Console.WriteLine(_testCaseHandler.GetTestCaseResult().ToString());
                                 if (_testCaseHandler.GetTestCaseResult().ToString() != "passed")
                                 {
                                     Charger.tests[4].testBestanden = false;
                                     result = "failed";
                                 }
                             }
+                            
                             _testCaseHandler.SendCdsTestCaseResultRequest(3 + testCase);
+                            Console.WriteLine(_testCaseHandler.GetTestCaseResult().ToString());
                             if (_testCaseHandler.GetTestCaseResult().ToString() != "passed")
                             {
                                 Charger.tests[5].testBestanden = false;
@@ -886,11 +890,24 @@ namespace EoL_Automatik_Ladetest
                     case 5:
                         endProgram();
                         Console.WriteLine("12 EoL-A => LLAME A PARAR EL PROGRAMA");
+                        foreach (Test t in Charger.tests)
+                        {
+                            if (t.testErfordelich)
+                            {
+                                if (t.testBestanden)
+                                {
+                                    TexteHinzufuegen(t.name + " " + Resources.m_bestanden);
+                                }
+                                else
+                                {
+                                    TexteHinzufuegen(t.name + " " + Resources.m_bestandenNicht);
+                                }
+                            }
+                        }
                         PDF = true;
                         break;
                     default:
                         break;
-
                 }
             }
             else
@@ -1002,7 +1019,7 @@ namespace EoL_Automatik_Ladetest
                                 if (lblCDSstatus.Text == "active")
                                 {
                                     string text;
-                                    if (prozess == 1) text = Resources.m_notausDruecken;
+                                    if (prozess == 0) text = Resources.m_notausDruecken;
                                     else text = Resources.m_tuerOeffnen;
                                     
                                     antworte = MessageBox.Show(text + "\n" + Resources.m_f_errorFlagsLesen, Charger.tests[prozess].name, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
