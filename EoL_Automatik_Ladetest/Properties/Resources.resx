@@ -216,4 +216,8 @@
   <data name="mode_wartung" xml:space="preserve">
     <value>Mode: Wartung</value>
   </data>
+  <data name="m_CdsFehler" xml:space="preserve">
+    <value />
+    <comment>CDS ist im Fehler. Bitte behenen Sie den Fehler und versuchen nochmal.</comment>
+  </data>
 </root>

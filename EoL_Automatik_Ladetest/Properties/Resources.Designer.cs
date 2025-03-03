@@ -196,6 +196,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die  ähnelt.
+        /// </summary>
+        internal static string m_CdsFehler {
+            get {
+                return ResourceManager.GetString("m_CdsFehler", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Das Programm ist mit dem CDS nitch verbunden. Bitte versuchen Sie die Verbindung zu erreichen und dann starten Sie den Test nochmal. ähnelt.
         /// </summary>
         internal static string m_cdsNotConnected {
