@@ -22,6 +22,7 @@ using PdfSharp.Drawing;
 using System.Linq;
 using PdfSharp.Fonts;
 using static System.Net.Mime.MediaTypeNames;
+using System.IO;
 //using Application = Microsoft.Office.Interop.Word.Application;
 
 namespace EoL_Automatik_Ladetest
@@ -69,9 +70,11 @@ namespace EoL_Automatik_Ladetest
 
             // -- TestCase Handler --
             ipAdresse = new IPAddress(new byte[] { 192, 168, 30, 30 });
-            testPath = @"D:\ChargingDiscover\Projects\SoP_Prueba";
-            //testPath = ConfigurationManager.AppSettings[path];
-
+            //testPath = @"D:\ChargingDiscover\Projects\SoP_Prueba";
+            string relativeTestPath = Path.Combine("Dateien", "Projects");
+            testPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, relativeTestPath);
+            
+                
             _testCaseHandler = new TestCaseHandler(testPath);
             _testCaseHandler.ConnectionStateChangedEvent += UpdateConnectionsStatus;
             _testCaseHandler.CdsStatusUpdatedEvent += UpdateCdsStatus;
@@ -122,7 +125,7 @@ namespace EoL_Automatik_Ladetest
                 return;
             }
             testCaseResult = _testCaseHandler.GetTestCaseResult().ToString();
-            lblResult.Text = testCaseResult;
+            //lblResult.Text = testCaseResult;
         }
 
         private void UpdateConnectionsStatus(CdsTestCaseLibrary.Enums.ConnectionState state)
@@ -418,6 +421,13 @@ namespace EoL_Automatik_Ladetest
                             TempWeiter.Start();
                             Console.WriteLine("00 EoL-A => ACTIVE EL TEMP");
 
+                            for (int i = 0; i < Charger.tests.Length; i++)
+                            {
+                                Charger.tests[i].tabelleDatei.Clear();
+                                Charger.tests[i].testBestanden = false;
+                                Charger.tests[i].testGearbeitet = 0;
+                            }
+
                             break;
 
                         //Notaus Test
@@ -660,7 +670,10 @@ namespace EoL_Automatik_Ladetest
                             {
                                 //Iniciar Test
                                 TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_starten);
-                                antworte = MessageBox.Show(Resources.DC1 + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                                string text;
+                                if (pruefFeld == "PF1" || pruefFeld == "PF4") text = Resources.DC1;
+                                else text = Resources.DC1 + " & " + Resources.DC2;
+                                    antworte = MessageBox.Show(text + ": " + Resources.m_f_LadePistgesteckt, Resources.m_bestaetigt, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
                                 if (antworte == DialogResult.OK)
                                 {
@@ -787,6 +800,12 @@ namespace EoL_Automatik_Ladetest
                                 Charger.tests[3].tabelleDatei.Add(lastDatei01);
                                 Charger.tests[3].tabelleDatei[Charger.tests[3].tabelleDatei.Count - 1].Add(new List<string> { "result", resultIso });
 
+                                if (Charger.tests[2].testBestanden) TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestanden);
+                                else TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_bestandenNicht);
+
+                                if (Charger.tests[3].testBestanden) TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestanden);
+                                else TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestandenNicht);
+
                                 prozess++;
                                 TempWeiter.Start();
                             }
@@ -798,7 +817,7 @@ namespace EoL_Automatik_Ladetest
                             {
                                 //Iniciar Test
                                 TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_starten);
-                                if (Charger.tests[2].testGearbeitet == 2 && (pruefFeld == "PF2" || pruefFeld == "PF3"))
+                                if (Charger.tests[2].testGearbeitet == 1 && (pruefFeld == "PF2" || pruefFeld == "PF3"))
                                 {
                                     Charger.tests[4].testGearbeitet = 1;
                                     TempWeiter.Start();
@@ -925,6 +944,12 @@ namespace EoL_Automatik_Ladetest
                                 Charger.tests[5].tabelleDatei[Charger.tests[5].tabelleDatei.Count - 1].Add(new List<string> { "result", resultIso });
 
 
+                                if (Charger.tests[4].testBestanden) TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_bestanden);
+                                else TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_bestandenNicht);
+
+                                if (Charger.tests[5].testBestanden) TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestanden);
+                                else TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestandenNicht);
+
                                 prozess++;
                                 TempWeiter.Start();
                             }
@@ -934,21 +959,23 @@ namespace EoL_Automatik_Ladetest
                         case 5:
                             endProgram();
                             Console.WriteLine("12 EoL-A => LLAME A PARAR EL PROGRAMA");
+                            string totalResult = "passed";
                             foreach (Test t in Charger.tests)
                             {
                                 if (t.testErfordelich)
                                 {
-                                    if (t.testBestanden)
-                                    {
-                                        TexteHinzufuegen(t.name + " " + Resources.m_bestanden);
-                                    }
-                                    else
-                                    {
-                                        TexteHinzufuegen(t.name + " " + Resources.m_bestandenNicht);
-                                    }
+                                    if (!t.testBestanden) totalResult = "failed";
                                 }
                             }
-                            PDF = true;
+
+                            if (totalResult == "passed")
+                            {
+                                TexteHinzufuegen(Resources.m_alleTests + " " + Resources.m_bestanden);
+                                TexteHinzufuegen(Resources.m_PDverfugbar);
+                                PDF = true;
+                            }
+
+                            
                             break;
                         default:
                             break;
@@ -1230,7 +1257,7 @@ namespace EoL_Automatik_Ladetest
                                     }
                                     else projectName = projectName + "Iso.cdpj";
 
-                                    if (testStarten(projectName, Resources.DC1LadeTest))
+                                    if (testStarten(projectName, Charger.tests[prozess].name))
                                     {
                                         Charger.tests[prozess].testGearbeitet = 1;
 
@@ -1313,7 +1340,6 @@ namespace EoL_Automatik_Ladetest
                                 // Obtener el último elemento de tabelleDatei si existe
                                 var tabelleDatei2 = Charger.tests[prozess].tabelleDatei;
                                 List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
-                                Charger.tests[prozess].tabelleDatei.Remove(Charger.tests[prozess].tabelleDatei[tabelleDatei2.Count - 1]);
                                 Charger.tests[prozess].tabelleDatei[Charger.tests[prozess].tabelleDatei.Count - 1].Add(new List<string> { "result", result });
 
 
@@ -1588,12 +1614,12 @@ namespace EoL_Automatik_Ladetest
                 FileName = Charger.FA + "_TestCaseResport_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".pdf"
             };
             
-            //string pdfFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Reporte.pdf";
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+           if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string pdfFilePath = saveFileDialog.FileName;
                 // Ruta del documento de Word
-                string wordFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Bericht.docx";
+                //string wordFilePath = @"C:\Users\z004kszj\source\repos\EoL_Automatik_Ladetest\Bericht.docx";
+                string wordFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dateien" , "Bericht.docx");
 
                 // Crear una instancia de la aplicación de Word
                 Application wordApp = new Application();
@@ -1708,14 +1734,7 @@ namespace EoL_Automatik_Ladetest
                             paragraph.Range.Delete();    
                         }
                     }
-                    //for (int i = wordDoc.Paragraphs.Count; i > 1; i--)
-                    //{
-                        //Paragraph paragraph = wordDoc.Paragraphs[i];
-                        //if (string.IsNullOrWhiteSpace(paragraph.Range.Text))
-                        //{
-                            //paragraph.Range.Delete();
-                        //}
-                    //}
+                    TexteHinzufuegen(Resources.m_PDFerstellt);
                 }
 
                 catch (Exception ex)

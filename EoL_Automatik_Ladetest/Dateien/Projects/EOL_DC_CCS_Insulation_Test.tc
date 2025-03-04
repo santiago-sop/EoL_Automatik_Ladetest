@@ -1,0 +1,216 @@
+﻿<tns:TestCase name="EOL_DC_CCS_Insulation_Test" packageName="" description="CCS Insulation Test" specification="DIN_SPEC_70121" emulation="EV" charging="DC" systemTolerance="Developer" creator="" dateCreated="" dateModified="2023-08-23 10:41:40" manual="false" valid="true" testCaseVersion="1.0" originTestCaseSpec="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="CDSTestCase">
+    <Parameters>
+        <Parameter name="CarVoltage" description="Target battery voltage" unit="V" defaultValue="550" minValue="150" maxValue="600" />
+        <Parameter name="CarCurrent" description="Target current" unit="A" defaultValue="10" minValue="0" maxValue="21" />
+        <Parameter name="RE_Warning" description="Pos. resistance at teststart (0 to deactivate REn)" unit="Ohm" defaultValue="400000" minValue="0" maxValue="2047500" />
+        <Parameter name="RE_Fault" description="Negative resistance at teststart (0 to deactivate REn)" unit="Ohm" defaultValue="90000" minValue="0" maxValue="2047500" />
+        <Parameter name="isoTime" description="Time for iso value" unit="s" defaultValue="10" minValue="0" maxValue="1000" />
+    </Parameters>
+    <Steps>
+        <Step description="Definition">
+            <Actions text="$IRE_Warning = params.RE_Warning; &#xD;&#xA;$IRE_Fault = params.RE_Fault;&#xD;&#xA;$waitIsoTime = params.isoTime;">
+                <SetVariable name="IRE_Warning">
+                    <GetParameter name="RE_Warning" />
+                </SetVariable>
+                <SetVariable name="IRE_Fault">
+                    <GetParameter name="RE_Fault" />
+                </SetVariable>
+                <SetVariable name="waitIsoTime">
+                    <GetParameter name="isoTime" />
+                </SetVariable>
+            </Actions>
+        </Step>
+        <Step description="Configuration">
+            <Actions text="io.EVTargetVoltage = params.CarVoltage;&#xD;&#xA;io.EVTargetCurrent = params.CarCurrent;&#xD;&#xA;io.Printf(&quot;--- START CCS ISO TEST ---&quot;);">
+                <SetApplicationValue name="EVTargetVoltage">
+                    <GetParameter name="CarVoltage" />
+                </SetApplicationValue>
+                <SetApplicationValue name="EVTargetCurrent">
+                    <GetParameter name="CarCurrent" />
+                </SetApplicationValue>
+                <Printf format="--- START CCS ISO TEST ---" />
+            </Actions>
+        </Step>
+        <Step description="Wait for charging active">
+            <Actions text="io.Printf(&quot;Wait for charging is active&quot;);">
+                <Printf format="Wait for charging is active" />
+            </Actions>
+            <PassConditions text="io.IsSendingV2GMessage(&quot;CurrentDemandReq&quot;)">
+                <IsSendingV2GMessage type="CurrentDemandReq" />
+            </PassConditions>
+            <FailConditions text="time.IsElapsed(120);">
+                <IsElapsedTime>
+                    <Const value="120" />
+                </IsElapsedTime>
+            </FailConditions>
+        </Step>
+        <Step description="Wait for 20s">
+            <Actions text="io.Printf(&quot;Wait 20s&quot;);">
+                <Printf format="Wait 20s" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(20);">
+                <IsElapsedTime>
+                    <Const value="20" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Set insulation warning">
+            <Actions text="io.IRE_U_Max = io.EVTargetVoltage;&#xD;&#xA;io.IRE_R_DC_Plus_Set =params.RE_Warning;&#xD;&#xA;io.IRE_Use = 1;&#xD;&#xA;io.Printf(&quot;Activate IRE and set IRE_Warning = %1&quot;, $IRE_Warning);">
+                <SetApplicationValue name="IRE_U_Max">
+                    <GetApplicationValue name="EVTargetVoltage" />
+                </SetApplicationValue>
+                <SetApplicationValue name="IRE_R_DC_Plus_Set">
+                    <GetParameter name="RE_Warning" />
+                </SetApplicationValue>
+                <SetApplicationValue name="IRE_Use">
+                    <Const value="1" />
+                </SetApplicationValue>
+                <Printf format="Activate IRE and set IRE_Warning = %1">
+                    <GetVariableValue name="IRE_Warning" />
+                </Printf>
+            </Actions>
+            <PassConditions text="time.IsElapsed(1)">
+                <IsElapsedTime>
+                    <Const value="1" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Wait">
+            <Actions text="io.Printf(&quot;Wait for %1&quot;,$waitIsoTime );">
+                <Printf format="Wait for %1">
+                    <GetVariableValue name="waitIsoTime" />
+                </Printf>
+            </Actions>
+            <PassConditions text="time.IsElapsed(params.isoTime);">
+                <IsElapsedTime>
+                    <GetParameter name="isoTime" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Deactivate IRE">
+            <Actions text="io.IRE_Use = 0;&#xD;&#xA;io.Printf(&quot;Deactivate IRE&quot;);">
+                <SetApplicationValue name="IRE_Use">
+                    <Const value="0" />
+                </SetApplicationValue>
+                <Printf format="Deactivate IRE" />
+            </Actions>
+        </Step>
+        <Step description="Wait for 10s">
+            <Actions text="io.Printf(&quot;Wait for 10s&quot;);">
+                <Printf format="Wait for 10s" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(10);">
+                <IsElapsedTime>
+                    <Const value="10" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <IfStep>
+            <Condition text="io.IsCPState(&quot;C2&quot;)">
+                <IsCPState state="C2" />
+            </Condition>
+            <ThenSteps>
+                <Step>
+                    <Actions text="io.Printf(&quot;***** Iso warning test successful *****&quot;);">
+                        <Printf format="***** Iso warning test successful *****" />
+                    </Actions>
+                </Step>
+            </ThenSteps>
+            <ElseSteps>
+                <Step>
+                    <Actions text="io.Printf(&quot;***** Iso warning test failed *****&quot;);&#xD;&#xA;io.SetInconclusive();">
+                        <Printf format="***** Iso warning test failed *****" />
+                        <SetInconclusive />
+                    </Actions>
+                </Step>
+            </ElseSteps>
+        </IfStep>
+        <Step description="Wait">
+            <Actions text="io.Printf(&quot;Wait for 10s&quot;);">
+                <Printf format="Wait for 10s" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(10);">
+                <IsElapsedTime>
+                    <Const value="10" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Set insulation fault">
+            <Actions text="io.IRE_U_Max = io.EVTargetVoltage;&#xD;&#xA;io.IRE_R_DC_Plus_Set =params.RE_Fault;&#xD;&#xA;io.IRE_Use = 1;&#xD;&#xA;io.Printf(&quot;Activate IRE and set IRE_Fault = %1&quot;, $IRE_Fault);">
+                <SetApplicationValue name="IRE_U_Max">
+                    <GetApplicationValue name="EVTargetVoltage" />
+                </SetApplicationValue>
+                <SetApplicationValue name="IRE_R_DC_Plus_Set">
+                    <GetParameter name="RE_Fault" />
+                </SetApplicationValue>
+                <SetApplicationValue name="IRE_Use">
+                    <Const value="1" />
+                </SetApplicationValue>
+                <Printf format="Activate IRE and set IRE_Fault = %1">
+                    <GetVariableValue name="IRE_Fault" />
+                </Printf>
+            </Actions>
+            <PassConditions text="time.IsElapsed(1);">
+                <IsElapsedTime>
+                    <Const value="1" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Termination of charging">
+            <PassConditions text="NOT(io.IsCPState(&quot;C2&quot;));">
+                <Not>
+                    <IsCPState state="C2" />
+                </Not>
+            </PassConditions>
+            <FailConditions text="time.IsElapsed(20);">
+                <IsElapsedTime>
+                    <Const value="20" />
+                </IsElapsedTime>
+            </FailConditions>
+        </Step>
+        <Step>
+            <Actions text="io.Printf(&quot;***** Iso fault test successful *****&quot;);">
+                <Printf format="***** Iso fault test successful *****" />
+            </Actions>
+        </Step>
+        <Step description="Deactivate IRE">
+            <Actions text="io.IRE_Use = 0;&#xD;&#xA;io.Printf(&quot;Deactivate IRE&quot;);">
+                <SetApplicationValue name="IRE_Use">
+                    <Const value="0" />
+                </SetApplicationValue>
+                <Printf format="Deactivate IRE" />
+            </Actions>
+        </Step>
+        <Step description="Stop Charging">
+            <Actions text="io.Printf(&quot;--- Isolation Test is finished ---&quot;);&#xD;&#xA;io.StopCharging();">
+                <Printf format="--- Isolation Test is finished ---" />
+                <StopCharging />
+            </Actions>
+        </Step>
+        <Step description="Open CP">
+            <Actions text="io.SetCPInterrupt(true);">
+                <SetCPInterrupt value="true" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(0.015, false);">
+                <IsElapsedTime logging="false">
+                    <Const value="0.015" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Open PP after 15 ms">
+            <Actions text="io.SetPPInterrupt(true);">
+                <SetPPInterrupt value="true" />
+            </Actions>
+        </Step>
+        <Step description="End of Sequence">
+            <Actions text="io.Printf(&quot;Closing Test&quot;);">
+                <Printf format="Closing Test" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(5);">
+                <IsElapsedTime>
+                    <Const value="5" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+    </Steps>
+</tns:TestCase>

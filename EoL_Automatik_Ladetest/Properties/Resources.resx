@@ -217,7 +217,15 @@
     <value>Mode: Wartung</value>
   </data>
   <data name="m_CdsFehler" xml:space="preserve">
-    <value />
-    <comment>CDS ist im Fehler. Bitte behenen Sie den Fehler und versuchen nochmal.</comment>
+    <value>CDS ist im Fehler. Bitte beheben Sie den Fehler und versuchen nochmal.</value>
+  </data>
+  <data name="m_PDFerstellt" xml:space="preserve">
+    <value>PDF wurde erfolgreich erstellt</value>
+  </data>
+  <data name="m_PDverfugbar" xml:space="preserve">
+    <value>Die Erstellung des PDF-Bericht ist jetzt verfügbar. </value>
+  </data>
+  <data name="m_alleTests" xml:space="preserve">
+    <value>Alles Tests</value>
   </data>
 </root>

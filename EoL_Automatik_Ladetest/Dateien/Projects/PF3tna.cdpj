@@ -1,0 +1,82 @@
+﻿<Project Version="1" Type="CDSSystem1">
+    <Meta>
+        <ParamValue Name="DoeProfile" Value="Doe_Profile.ev" />
+        <ParamValue Name="DoeProfile" Value="Doe_Profile.ev" />
+        <ParamValue Name="ProjectPath" Value="D:\ChargingDiscover\Parametrization\SoP_Prueba" />
+    </Meta>
+    <Configuration>
+        <ParamValue Name="SelectedUseCase" Value="EV" />
+        <ParamValue Name="Specification" Value="DIN_SPEC_70121" />
+        <ParamValue Name="ChargeMode" Value="DC" />
+        <ParamValue Name="SourceType" Value="" />
+        <ParamValue Name="SourceOperationMode" Value="" />
+        <ParamValue Name="SinkType" Value="" />
+        <ParamValue Name="SinkOperationMode" Value="" />
+    </Configuration>
+    <Tasks>
+        <Task Id="0" Name="MuxInletCCS_Type2_Left_DIN" FileName="MuxInletCCS_Type2_Left_DIN.tc" Repetition="1" DoeProfile="Doe_Profile.ev">
+            <Parameters />
+        </Task>
+        <Task Id="1" Name="EOL_DC_CCS_Doors_Emergency_Test" FileName="EOL_DC_CCS_Doors_Emergency_Test.tc" Repetition="1" DoeProfile="Doe_Profile.ev">
+            <Parameters>
+                <Parameter Id="0" Name="EVChargingVoltage" Value="500" />
+                <Parameter Id="1" Name="EOLTargetCurrent" Value="18" />
+                <Parameter Id="2" Name="TimerTestDuration" Value="120" />
+            </Parameters>
+        </Task>
+    </Tasks>
+    <Testcases>
+        <Testcase Id="0">
+            <ParamValue Name="TestId" Value="0" />
+            <ParamValue Name="TestName" Value="MuxInletCCS_Type2_Left_DIN" />
+            <ParamValue Name="TestFileName" Value="MuxInletCCS_Type2_Left_DIN.tc" />
+            <ParamValue Name="Testreference" Value="MuxInletCCS_Type2_Left_DIN" />
+            <ParamValue Name="TestDescription" Value="" />
+            <ParamValue Name="Repetition" Value="1" />
+            <ParamValue Name="StandardParameters" Value="" />
+            <ParamValue Name="ExpertParameters" Value="" />
+            <ParamValue Name="DoeProfile" Value="Doe_Profile.ev" />
+            <TestcaseParameters />
+        </Testcase>
+        <Testcase Id="1">
+            <ParamValue Name="TestId" Value="1" />
+            <ParamValue Name="TestName" Value="EOL_DC_CCS_Doors_Emergency_Test" />
+            <ParamValue Name="TestFileName" Value="EOL_DC_CCS_Doors_Emergency_Test.tc" />
+            <ParamValue Name="Testreference" Value="EOL_DC_CCS_Doors_Emergency_Test" />
+            <ParamValue Name="TestDescription" Value="CCS Doors Emergency Test" />
+            <ParamValue Name="Repetition" Value="1" />
+            <ParamValue Name="StandardParameters" Value="" />
+            <ParamValue Name="ExpertParameters" Value="" />
+            <ParamValue Name="DoeProfile" Value="Doe_Profile.ev" />
+            <TestcaseParameters>
+                <Parameter Id="0">
+                    <ParamValue Name="ParameterName" Value="EVChargingVoltage" />
+                    <ParamValue Name="ParameterValue" Value="500" />
+                    <ParamValue Name="ParameterUnit" Value="V" />
+                    <ParamValue Name="TestcaseParameterId" Value="" />
+                    <ParamValue Name="ParameterDescription" Value="Batteryvoltage" />
+                    <ParamValue Name="ParameterMaxVal" Value="600" />
+                    <ParamValue Name="ParameterMinVal" Value="150" />
+                </Parameter>
+                <Parameter Id="1">
+                    <ParamValue Name="ParameterName" Value="EOLTargetCurrent" />
+                    <ParamValue Name="ParameterValue" Value="18" />
+                    <ParamValue Name="ParameterUnit" Value="A" />
+                    <ParamValue Name="TestcaseParameterId" Value="" />
+                    <ParamValue Name="ParameterDescription" Value="Testcurrent " />
+                    <ParamValue Name="ParameterMaxVal" Value="21" />
+                    <ParamValue Name="ParameterMinVal" Value="0" />
+                </Parameter>
+                <Parameter Id="2">
+                    <ParamValue Name="ParameterName" Value="TimerTestDuration" />
+                    <ParamValue Name="ParameterValue" Value="120" />
+                    <ParamValue Name="ParameterUnit" Value="s" />
+                    <ParamValue Name="TestcaseParameterId" Value="" />
+                    <ParamValue Name="ParameterDescription" Value="Duration for remaining at constant current" />
+                    <ParamValue Name="ParameterMaxVal" Value="1000" />
+                    <ParamValue Name="ParameterMinVal" Value="1" />
+                </Parameter>
+            </TestcaseParameters>
+        </Testcase>
+    </Testcases>
+</Project>

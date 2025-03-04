@@ -53,7 +53,6 @@
             this.tBNachrichten = new System.Windows.Forms.TextBox();
             this.btnStop = new System.Windows.Forms.Button();
             this.gbCDS = new System.Windows.Forms.GroupBox();
-            this.lblResult = new System.Windows.Forms.Label();
             this.lblCDSstatus = new System.Windows.Forms.Label();
             this.btnCDSReset = new System.Windows.Forms.Button();
             this.btnCDSTrennen = new System.Windows.Forms.Button();
@@ -287,14 +286,14 @@
             // automatikToolStripMenuItem
             // 
             this.automatikToolStripMenuItem.Name = "automatikToolStripMenuItem";
-            this.automatikToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.automatikToolStripMenuItem.Size = new System.Drawing.Size(161, 26);
             this.automatikToolStripMenuItem.Text = "Automatik";
             this.automatikToolStripMenuItem.Click += new System.EventHandler(this.automatikToolStripMenuItem_Click);
             // 
             // wartungToolStripMenuItem
             // 
             this.wartungToolStripMenuItem.Name = "wartungToolStripMenuItem";
-            this.wartungToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.wartungToolStripMenuItem.Size = new System.Drawing.Size(161, 26);
             this.wartungToolStripMenuItem.Text = "Wartung";
             this.wartungToolStripMenuItem.Click += new System.EventHandler(this.wartungToolStripMenuItem_Click);
             // 
@@ -321,7 +320,6 @@
             // 
             // gbCDS
             // 
-            this.gbCDS.Controls.Add(this.lblResult);
             this.gbCDS.Controls.Add(this.lblCDSstatus);
             this.gbCDS.Controls.Add(this.btnCDSReset);
             this.gbCDS.Controls.Add(this.btnCDSTrennen);
@@ -329,20 +327,10 @@
             this.gbCDS.Controls.Add(this.lblStatusVerbindung);
             this.gbCDS.Location = new System.Drawing.Point(426, 115);
             this.gbCDS.Name = "gbCDS";
-            this.gbCDS.Size = new System.Drawing.Size(200, 187);
+            this.gbCDS.Size = new System.Drawing.Size(200, 158);
             this.gbCDS.TabIndex = 9;
             this.gbCDS.TabStop = false;
             this.gbCDS.Text = "CDS";
-            // 
-            // lblResult
-            // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(7, 151);
-            this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(107, 16);
-            this.lblResult.TabIndex = 14;
-            this.lblResult.Text = "TestCase Result";
-            this.lblResult.Visible = false;
             // 
             // lblCDSstatus
             // 
@@ -410,6 +398,7 @@
             this.button1.TabIndex = 11;
             this.button1.Text = "Generar Datos";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // tbFA
@@ -495,7 +484,6 @@
         private System.Windows.Forms.Button btnCDSVerbinden;
         private System.Windows.Forms.Label lblStatusVerbindung;
         private System.Windows.Forms.Label lblCDSstatus;
-        private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Button btnPDF;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox tbFA;

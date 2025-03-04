@@ -1,0 +1,142 @@
+﻿<tns:TestCase name="MuxInletCCS_Type2_Left_DIN" packageName="Samples" description="" specification="DIN_SPEC_70121" emulation="EV" charging="DC" systemTolerance="Developer" release="New" creator="Keysight Technologies Deutschland GmbH" dateCreated="2021-12-15 09:12:04" dateModified="2021-12-15 09:30:02" manual="false" valid="true" testCaseVersion="1.0" originTestCaseSpec="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="CDSTestCase">
+    <Steps>
+        <Step description="Disconnect all Inlets">
+            <Actions text="io.SetIoOutput(&quot;EV_Chademo_Inlet&quot;, 0);&#xD;&#xA;io.SetIoOutput(&quot;EV_CCS_Type2_Left_Inlet&quot;, 0);&#xD;&#xA;io.SetIoOutput(&quot;EV_CCS_Type2_Right_Inlet&quot;, 0);&#xD;&#xA;io.SetIoOutput(&quot;EV_Type2_AC_Inlet&quot;, 0);">
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_Chademo_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_CCS_Type2_Left_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_CCS_Type2_Right_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_Type2_AC_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+            </Actions>
+            <PassConditions text="time.IsElapsed(1);">
+                <IsElapsedTime>
+                    <Const value="1" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Check if Multiplexer is in correct state">
+            <FailConditions text="io.GetIoInput(&quot;Feedback_EV_Chademo_Inlet&quot;) != 0;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_CCS_Type2_Left_Inlet&quot;) != 0;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_CCS_Type2_Right_Inlet&quot;) != 0;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_Type2_AC_Inlet&quot;) != 0;">
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_Chademo_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_CCS_Type2_Left_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_CCS_Type2_Right_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_Type2_AC_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+            </FailConditions>
+        </Step>
+        <Step description="Connect CCS Type 2 Left Inlet">
+            <Actions text="io.SetIoOutput(&quot;EV_Chademo_Inlet&quot;, 0);&#xD;&#xA;io.SetIoOutput(&quot;EV_CCS_Type2_Left_Inlet&quot;, 1);&#xD;&#xA;io.SetIoOutput(&quot;EV_CCS_Type2_Right_Inlet&quot;, 0);&#xD;&#xA;io.SetIoOutput(&quot;EV_Type2_AC_Inlet&quot;, 0);">
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_Chademo_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_CCS_Type2_Left_Inlet" />
+                    </Name>
+                    <Const value="1" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_CCS_Type2_Right_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+                <SetIoOutput>
+                    <Name>
+                        <String value="EV_Type2_AC_Inlet" />
+                    </Name>
+                    <Const value="0" />
+                </SetIoOutput>
+            </Actions>
+            <PassConditions text="time.IsElapsed(1);">
+                <IsElapsedTime>
+                    <Const value="1" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Check if Multiplexer is in correct state">
+            <FailConditions text="io.GetIoInput(&quot;Feedback_EV_Chademo_Inlet&quot;) != 0;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_CCS_Type2_Left_Inlet&quot;) != 1;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_CCS_Type2_Right_Inlet&quot;) != 0;&#xD;&#xA;io.GetIoInput(&quot;Feedback_EV_Type2_AC_Inlet&quot;) != 0;">
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_Chademo_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_CCS_Type2_Left_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="1" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_CCS_Type2_Right_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+                <IsNotEqual>
+                    <GetIoInput>
+                        <Name>
+                            <String value="Feedback_EV_Type2_AC_Inlet" />
+                        </Name>
+                    </GetIoInput>
+                    <Const value="0" />
+                </IsNotEqual>
+            </FailConditions>
+        </Step>
+    </Steps>
+</tns:TestCase>

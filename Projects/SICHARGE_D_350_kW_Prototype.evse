@@ -1,0 +1,47 @@
+﻿<EVSE Version="1" Type="CDSSystem1">
+    <EVSEParams>
+        <DUTDOEParamValues>
+            <ParamValue Name="NominalVoltage_Phase_N_EVSE_AC" Value="" />
+            <ParamValue Name="Netform_EVSE" Value="0" />
+            <ParamValue Name="Max_Power_EVSE_AC" Value="22" />
+            <ParamValue Name="Max_Charging_Current_EVSE_AC" Value="32" />
+            <ParamValue Name="Max_Err_Current_EVSE_AC" Value="34" />
+            <ParamValue Name="Max_Err_Power_EVSE_AC" Value="24" />
+            <ParamValue Name="Max_Power_EVSE_DC" Value="350" />
+            <ParamValue Name="Max_Charging_Current_EVSE_DC" Value="500" />
+            <ParamValue Name="Max_Charging_Voltage_EVSE_DC" Value="1000" />
+            <ParamValue Name="Max_Err_Voltage_EVSE_DC" Value="990" />
+            <ParamValue Name="Max_Err_Current_EVSE_DC" Value="501" />
+            <ParamValue Name="Max_Err_Power_EVSE_DC" Value="501" />
+            <ParamValue Name="VehicleConnector" Value="" />
+            <ParamValue Name="ValueAddedServicesEvse" Value="" />
+            <ParamValue Name="ConnectionInfrastructure" Value="" />
+            <ParamValue Name="SupportedEnergyTransferModeEVSE" Value="" />
+            <ParamValue Name="EVSE_PP_CABLE_TYPE" Value="3" />
+            <ParamValue Name="ConnectionForm" Value="" />
+            <ParamValue Name="EntryVoltage" Value="" />
+            <ParamValue Name="MaxEntryCurrent" Value="" />
+            <ParamValue Name="MaxEntryPower" Value="" />
+            <ParamValue Name="Min_Charging_Current_EVSE_DC" Value="5" />
+            <ParamValue Name="Min_Charging_Voltage_EVSE_DC" Value="150" />
+            <ParamValue Name="NominalVoltagePhase1N_EVSE" Value="230" />
+            <ParamValue Name="NominalVoltagePhase2N_EVSE" Value="230" />
+            <ParamValue Name="NominalVoltagePhase3N_EVSE" Value="230" />
+            <ParamValue Name="NominalFrequency_EVSE" Value="50" />
+            <ParamValue Name="OffsetPhaseangleL1_EVSE" Value="0" />
+            <ParamValue Name="OffsetPhaseangleL2_EVSE" Value="0" />
+            <ParamValue Name="OffsetPhaseangleL3_EVSE" Value="0" />
+            <ParamValue Name="Contactor_EVSE" Value="65535" />
+        </DUTDOEParamValues>
+        <ProfileParamValues>
+            <ParamValue Name="Description" Value="" />
+            <ParamValue Name="Photo" Value="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" />
+            <ParamValue Name="Type" Value="" />
+            <ParamValue Name="Manufacturer" Value="SICHARGE 350 kW Prototype" />
+            <ParamValue Name="ChargingNorm" Value="" />
+            <ParamValue Name="Charging_Procedure" Value="15" />
+            <ParamValue Name="Revision" Value="" />
+            <ParamValue Name="Serialnumber" Value="" />
+        </ProfileParamValues>
+    </EVSEParams>
+</EVSE>

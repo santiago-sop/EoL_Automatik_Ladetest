@@ -151,6 +151,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Alles Tests ähnelt.
+        /// </summary>
+        internal static string m_alleTests {
+            get {
+                return ResourceManager.GetString("m_alleTests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Bestätigt ähnelt.
         /// </summary>
         internal static string m_bestaetigt {
@@ -196,7 +205,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die  ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die CDS ist im Fehler. Bitte beheben Sie den Fehler und versuchen nochmal. ähnelt.
         /// </summary>
         internal static string m_CdsFehler {
             get {
@@ -282,6 +291,24 @@ namespace EoL_Automatik_Ladetest.Properties {
         internal static string m_NotausNormailizieren {
             get {
                 return ResourceManager.GetString("m_NotausNormailizieren", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die PDF wurde erfolgreich erstellt ähnelt.
+        /// </summary>
+        internal static string m_PDFerstellt {
+            get {
+                return ResourceManager.GetString("m_PDFerstellt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Die Erstellung des PDF-Bericht ist jetzt verfügbar.  ähnelt.
+        /// </summary>
+        internal static string m_PDverfugbar {
+            get {
+                return ResourceManager.GetString("m_PDverfugbar", resourceCulture);
             }
         }
         

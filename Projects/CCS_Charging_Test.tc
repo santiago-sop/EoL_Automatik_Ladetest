@@ -1,0 +1,129 @@
+﻿<tns:TestCase name="TestCase" packageName="" description="CCS Charging Test" specification="DIN_SPEC_70121" emulation="EV" charging="DC" systemTolerance="Developer" creator="" dateCreated="13.02.2017" dateModified="2024-11-11 10:58:59" manual="false" valid="true" testCaseVersion="1.0" originTestCaseSpec="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tns="CDSTestCase">
+    <Parameters>
+        <Parameter name="CarVoltage" description="Target battery voltage" unit="V" defaultValue="550" minValue="150" maxValue="600" />
+        <Parameter name="CarCurrent" description="Testcurrent " unit="A" defaultValue="18" minValue="0" maxValue="21" />
+        <Parameter name="TimerTestDuration" description="Duration for remaining at constant current" unit="s" defaultValue="300" minValue="1" maxValue="1000" />
+    </Parameters>
+    <Steps>
+        <Step description="Definitions">
+            <Actions text="io.EVIntRes_R1_R2 = 0.1;&#xD;&#xA;io.EVMaximumVoltageLimit = 600; &#xD;&#xA;io.EVMaximumCurrentLimit = 20;">
+                <SetApplicationValue name="EVIntRes_R1_R2">
+                    <Const value="0.1" />
+                </SetApplicationValue>
+                <SetApplicationValue name="EVMaximumVoltageLimit">
+                    <Const value="600" />
+                </SetApplicationValue>
+                <SetApplicationValue name="EVMaximumCurrentLimit">
+                    <Const value="20" />
+                </SetApplicationValue>
+            </Actions>
+        </Step>
+        <Step description="Wait until EVSE has successfully transmitted its charge parameters">
+            <PassConditions text="io.IsV2GMessageReceived(&quot;ChargeParameterDiscoveryRes&quot;);&#xD;&#xA;AND io.GetV2GMessageValue(&quot;ResponseCode&quot;) == 0;&#xD;&#xA;AND io.GetV2GMessageValue(&quot;EVSEProcessing&quot;) == 0;">
+                <IsV2GMessageReceived type="ChargeParameterDiscoveryRes" />
+                <And>
+                    <IsEqual>
+                        <GetV2GMessageValue>
+                            <VarName>
+                                <String value="ResponseCode" />
+                            </VarName>
+                        </GetV2GMessageValue>
+                        <Const value="0" />
+                    </IsEqual>
+                </And>
+                <And>
+                    <IsEqual>
+                        <GetV2GMessageValue>
+                            <VarName>
+                                <String value="EVSEProcessing" />
+                            </VarName>
+                        </GetV2GMessageValue>
+                        <Const value="0" />
+                    </IsEqual>
+                </And>
+            </PassConditions>
+        </Step>
+        <Step description="Settings for charging test">
+            <Actions text="io.EVTargetCurrent = params.CarCurrent;&#xD;&#xA;io.EVTargetVoltage =params.CarVoltage;">
+                <SetApplicationValue name="EVTargetCurrent">
+                    <GetParameter name="CarCurrent" />
+                </SetApplicationValue>
+                <SetApplicationValue name="EVTargetVoltage">
+                    <GetParameter name="CarVoltage" />
+                </SetApplicationValue>
+            </Actions>
+        </Step>
+        <Step description="Start charging test">
+            <Actions text="io.Printf(&quot;Wait for charging is active&quot;);">
+                <Printf format="Wait for charging is active" />
+            </Actions>
+            <PassConditions text="io.IsV2GMessageReceived(&quot;CurrentDemandRes&quot;);">
+                <IsV2GMessageReceived type="CurrentDemandRes" />
+            </PassConditions>
+        </Step>
+        <Step description="Wait for target current">
+            <PassConditions text="time.IsElapsed(2);">
+                <IsElapsedTime>
+                    <Const value="2" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Start counting timer">
+            <Actions text="time.CreateReference(&quot;TimeDurationTest&quot;);">
+                <CreateTimeReference name="TimeDurationTest" />
+            </Actions>
+        </Step>
+        <Step description="Starting charging test message">
+            <Actions text="io.Printf(&quot;Start charging test for: %1s&quot;, params.TimerTestDuration);">
+                <Printf format="Start charging test for: %1s">
+                    <GetParameter name="TimerTestDuration" />
+                </Printf>
+            </Actions>
+            <PassConditions text="time.IsElapsed(params.TimerTestDuration);">
+                <IsElapsedTime>
+                    <GetParameter name="TimerTestDuration" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="End of charging test">
+            <Actions text="io.Printf(&quot;End of charging test. Time elapsed: %1s&quot;, time.GetElapsed(&quot;TimeDurationTest&quot;));">
+                <Printf format="End of charging test. Time elapsed: %1s">
+                    <GetElapsedTime name="TimeDurationTest" />
+                </Printf>
+            </Actions>
+        </Step>
+        <Step description="Perform a normal shutdown">
+            <Actions text="io.StopCharging();">
+                <StopCharging />
+            </Actions>
+            <PassConditions text="io.IsCPState(&quot;B1&quot;);">
+                <IsCPState state="B1" />
+            </PassConditions>
+        </Step>
+        <Step description="Open CP">
+            <Actions text="io.SetCPInterrupt(true);">
+                <SetCPInterrupt value="true" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(0.015, false);">
+                <IsElapsedTime logging="false">
+                    <Const value="0.015" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+        <Step description="Open PP after 15 ms">
+            <Actions text="io.SetPPInterrupt(true);">
+                <SetPPInterrupt value="true" />
+            </Actions>
+        </Step>
+        <Step description="End of Sequence">
+            <Actions text="io.Printf(&quot;Closing Test&quot;);">
+                <Printf format="Closing Test" />
+            </Actions>
+            <PassConditions text="time.IsElapsed(5);">
+                <IsElapsedTime>
+                    <Const value="5" />
+                </IsElapsedTime>
+            </PassConditions>
+        </Step>
+    </Steps>
+</tns:TestCase>
