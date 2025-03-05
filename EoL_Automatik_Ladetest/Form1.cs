@@ -184,17 +184,39 @@ namespace EoL_Automatik_Ladetest
             checkBoxERK.Checked = false;
             checkBoxNotaus.Checked = false;
 
-            //checkBoxNotausTest.Checked = false;
-            //checkBoxNotausTest.Enabled = false;
-
-            //checkBoxTurkontaktTest.Checked = true;
-            //checkBoxTestLinks.Checked = true;
-            //checkBoxIsoTestLinks.Checked = true;
-            //checkBoxTestRechts.Checked = true;
-            //checkBoxIsoTestRechts.Checked = true;
+            //Texte
+            checkBoxNotaus.Text = Resources.notaus;
+            checkBoxNotausTest.Text = Resources.notAusTest;
+            checkBoxTurkontaktTest.Text = Resources.tuerKontaktTest;
+            checkBoxTestLinks.Text = Resources.DC1LadeTest + ": " + Resources._3m5m;
+            checkBoxTestRechts.Text = Resources.DC2LadeTest + ": " + Resources._3m5m;
+            checkBoxIsoTestLinks.Text = Resources.DC1IsoTest;
+            checkBoxIsoTestRechts.Text = Resources.DC2IsoTest;
 
             btnStarten.Enabled = false;
             //btnStop.Enabled = false;
+
+            toolStripMenuItem1.Text = Resources.menuPF_IP;
+            pruffeld1ToolStripMenuItem.Text = Resources.menuPF + " 1";
+            pruffeld2ToolStripMenuItem.Text = Resources.menuPF + " 2";
+            pruffeld3ToolStripMenuItem.Text = Resources.menuPF + " 3";
+            pruffeld4ToolStripMenuItem.Text = Resources.menuPF + " 4";
+            modeToolStripMenuItem.Text = Resources.mode_automatik;
+            automatikToolStripMenuItem.Text = Resources.auto;
+            wartungToolStripMenuItem.Text = Resources.wartung;
+            lblFA.Text = Resources.serienNummer;
+            gbEinstellungen.Text = Resources.einstellungen;
+            gbTests.Text = Resources.tests;
+            lblPruffeld.Text = Resources.pfWaehlen;
+            lblStatusVerbindung.Text = Resources.verbindungsStatus;
+            lblCDSstatus.Text = Resources.cdsStatus;
+            btnStarten.Text = Resources.starten;
+            btnStop.Text = Resources.stoppen;
+            btnCDSVerbinden.Text = Resources.verbinden;
+            btnCDSTrennen.Text = Resources.trennen;
+            btnCDSReset.Text = Resources.reset;
+            btnPDF.Text = Resources.protokollErstellen;
+
 
             automatikToolStripMenuItem_Click(sender, e);
         }
@@ -280,8 +302,8 @@ namespace EoL_Automatik_Ladetest
         {
             if (checkBoxERK.Checked == true)
             {
-                checkBoxTestLinks.Text = Resources.DC1LadeTest + Resources._3m1m;
-                checkBoxTestRechts.Text = Resources.DC2LadeTest + Resources._3m1m;
+                checkBoxTestLinks.Text = Resources.DC1LadeTest + ": " + Resources._3m1m;
+                checkBoxTestRechts.Text = Resources.DC2LadeTest + ": " + Resources._3m1m;
                 checkBoxNotaus.Enabled = false;
                 checkBoxNotaus.Checked = false;
                 checkBoxNotausTest.Enabled = false;
@@ -289,8 +311,8 @@ namespace EoL_Automatik_Ladetest
             }
             else
             {
-                checkBoxTestLinks.Text = Resources.DC1LadeTest + Resources._3m5m;
-                checkBoxTestRechts.Text = Resources.DC2LadeTest + Resources._3m5m;
+                checkBoxTestLinks.Text = Resources.DC1LadeTest + ": " + Resources._3m5m;
+                checkBoxTestRechts.Text = Resources.DC2LadeTest + ": " + Resources._3m5m;
                 checkBoxNotaus.Enabled = true;
                 if (checkBoxNotaus.Checked == true)
                 {
@@ -785,9 +807,7 @@ namespace EoL_Automatik_Ladetest
                                 }
 
                                 TexteHinzufuegen(Resources.DC1LadeTest + " " + Resources.m_endet);
-                                TexteHinzufuegen("  ");
-
-
+                                
                                 // Obtener el último elemento de tabelleDatei si existe
                                 var tabelleDatei2 = Charger.tests[2].tabelleDatei;
                                 List<List<string>> lastDatei01 = tabelleDatei2.Count > 0 ? tabelleDatei2[tabelleDatei2.Count - 1] : null;
@@ -806,6 +826,7 @@ namespace EoL_Automatik_Ladetest
                                 if (Charger.tests[3].testBestanden) TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Resources.DC1IsoTest + " " + Resources.m_bestandenNicht);
 
+                                TexteHinzufuegen("  ");
                                 prozess++;
                                 TempWeiter.Start();
                             }
@@ -931,8 +952,7 @@ namespace EoL_Automatik_Ladetest
                                 }
 
                                 TexteHinzufuegen(Resources.DC2LadeTest + " " + Resources.m_endet);
-                                TexteHinzufuegen("  ");
-
+                                
                                 // Obtener el último elemento de tabelleDatei si existe
                                 var tabelleDatei3 = Charger.tests[4].tabelleDatei;
                                 List<List<string>> lastDatei03 = tabelleDatei3.Count > 0 ? tabelleDatei3[tabelleDatei3.Count - 1] : null;
@@ -949,7 +969,8 @@ namespace EoL_Automatik_Ladetest
 
                                 if (Charger.tests[5].testBestanden) TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestanden);
                                 else TexteHinzufuegen(Resources.DC2IsoTest + " " + Resources.m_bestandenNicht);
-
+                                
+                                TexteHinzufuegen("  ");
                                 prozess++;
                                 TempWeiter.Start();
                             }

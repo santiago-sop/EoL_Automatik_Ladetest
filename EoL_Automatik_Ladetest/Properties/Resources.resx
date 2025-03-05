@@ -136,64 +136,55 @@
     <value>Türkontakttest</value>
   </data>
   <data name="m_starten" xml:space="preserve">
-    <value>Starten</value>
+    <value>starten</value>
   </data>
   <data name="3m1m" xml:space="preserve">
-    <value>3 Mal, 1 Minute</value>
+    <value>3 x 1 Minute</value>
   </data>
   <data name="3m5m" xml:space="preserve">
-    <value>3 Mal, 5 Minuten</value>
+    <value>3 x 5 Minuten</value>
   </data>
   <data name="m_f_LadePistgesteckt" xml:space="preserve">
-    <value>Haben Sie die Ladepistole angestecket?</value>
+    <value>Sind die Ladepistolen Richtig verbunden</value>
   </data>
   <data name="m_testStopt" xml:space="preserve">
-    <value>Der Test wurde gestopet</value>
+    <value>Der Test wurde abgebrochen</value>
   </data>
   <data name="m_bestaetigt" xml:space="preserve">
     <value>Bestätigt</value>
   </data>
-  <data name="m_f_istBestanden" xml:space="preserve">
-    <value>Ist der Test bestanden?</value>
-  </data>
   <data name="m_cdsConnected" xml:space="preserve">
-    <value>Das Programm ist richtig mit dem CDS verbunden.</value>
+    <value>CDS Verbindung ist getrennt</value>
   </data>
   <data name="m_cdsNotConnected" xml:space="preserve">
     <value>Das Programm ist mit dem CDS nitch verbunden. Bitte versuchen Sie die Verbindung zu erreichen und dann starten Sie den Test nochmal.</value>
   </data>
-  <data name="m_cdsConectionLost" xml:space="preserve">
-    <value>Die Verbindung mit dem CDS wurde verloren</value>
-  </data>
   <data name="m_notausDruecken" xml:space="preserve">
-    <value>Bitte drücken Sie das Notausknopf</value>
+    <value>Bitte betätigen Sie jetzt den Not-Aus am Charger</value>
   </data>
   <data name="m_f_errorFlagsLesen" xml:space="preserve">
-    <value>Sind Error FLags richtig?</value>
-  </data>
-  <data name="m_errorFlagsLesen" xml:space="preserve">
-    <value>Error Flags lesen</value>
+    <value>Error Flags kontrollieren</value>
   </data>
   <data name="m_tuerOeffnen" xml:space="preserve">
-    <value>Bitte öffnen Sie die Tür</value>
+    <value>Bitte öffnen Sie jetzt die Charger Tür</value>
   </data>
   <data name="m_bestanden" xml:space="preserve">
-    <value>ist bestanden</value>
+    <value>bestanden</value>
   </data>
   <data name="m_bestandenNicht" xml:space="preserve">
-    <value>ist nicht bestanden</value>
+    <value>nicht bestanden</value>
   </data>
   <data name="m_NotausNormailizieren" xml:space="preserve">
-    <value>Bitte normalizieren das Notausknopf.</value>
+    <value>Bitte setzen Sie den Not-Aus am Charger zurück</value>
   </data>
   <data name="m_f_chargerGruen" xml:space="preserve">
-    <value>Wenn der Charger wieder grün ist, clicken Sie bitte auf JA</value>
+    <value>Wenn der Charger wieder Ladebereit ist, bestätigen Sie Bitte mit Ja.</value>
   </data>
   <data name="m_endet" xml:space="preserve">
-    <value>endet.</value>
+    <value>ist beendet</value>
   </data>
   <data name="m_tuerNormalisieren" xml:space="preserve">
-    <value>Bitte machen Sie die Tür wieder zu.</value>
+    <value>Bitte schließen Sie die Charger Tür</value>
   </data>
   <data name="DC1" xml:space="preserve">
     <value>DC1</value>
@@ -202,10 +193,10 @@
     <value>DC2</value>
   </data>
   <data name="m_SpeichernAlsPDF" xml:space="preserve">
-    <value>Speicher PDF als</value>
+    <value>Ladetest-Protokoll speichern unter</value>
   </data>
   <data name="bericht" xml:space="preserve">
-    <value>LadeTestBericht</value>
+    <value>Ladetest-Protokoll</value>
   </data>
   <data name="ergebnis" xml:space="preserve">
     <value>Ergebnis</value>
@@ -217,15 +208,66 @@
     <value>Mode: Wartung</value>
   </data>
   <data name="m_CdsFehler" xml:space="preserve">
-    <value>CDS ist im Fehler. Bitte beheben Sie den Fehler und versuchen nochmal.</value>
+    <value>Messequipment hat ein oder mehrere Fehler. Bitte beheben Sie die Fehler und versuchen es nochmal.</value>
   </data>
   <data name="m_PDFerstellt" xml:space="preserve">
-    <value>PDF wurde erfolgreich erstellt</value>
+    <value>Ladetest-Protokoll wurde erstellt</value>
   </data>
   <data name="m_PDverfugbar" xml:space="preserve">
-    <value>Die Erstellung des PDF-Bericht ist jetzt verfügbar. </value>
+    <value>Ladetest-Protokoll kann erstellt werden</value>
   </data>
   <data name="m_alleTests" xml:space="preserve">
-    <value>Alles Tests</value>
+    <value>Gesamtergebnis: </value>
+  </data>
+  <data name="notaus" xml:space="preserve">
+    <value>Notaus</value>
+  </data>
+  <data name="menuPF_IP" xml:space="preserve">
+    <value>Prüffelder IP-Adresse</value>
+  </data>
+  <data name="menuPF" xml:space="preserve">
+    <value>Prüffeld</value>
+  </data>
+  <data name="auto" xml:space="preserve">
+    <value>Automatik</value>
+  </data>
+  <data name="wartung" xml:space="preserve">
+    <value>Wartung</value>
+  </data>
+  <data name="serienNummer" xml:space="preserve">
+    <value>Seriennummer</value>
+  </data>
+  <data name="einstellungen" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="protokollErstellen" xml:space="preserve">
+    <value>Ladetest-Protokoll erstellen</value>
+  </data>
+  <data name="pfWaehlen" xml:space="preserve">
+    <value>Prüffeld wählen</value>
+  </data>
+  <data name="verbindungsStatus" xml:space="preserve">
+    <value>Verbindungsstatus</value>
+  </data>
+  <data name="verbinden" xml:space="preserve">
+    <value>Verbinden</value>
+  </data>
+  <data name="trennen" xml:space="preserve">
+    <value>Trennen</value>
+  </data>
+  <data name="reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="cdsStatus" xml:space="preserve">
+    <value>CDS Status</value>
+  </data>
+  <data name="starten" xml:space="preserve">
+    <value>STARTEN</value>
+  </data>
+  <data name="stoppen" xml:space="preserve">
+    <value>STOPPEN</value>
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value>Tests</value>
   </data>
 </root>

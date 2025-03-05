@@ -61,7 +61,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 3 Mal, 1 Minute ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die 3 x 1 Minute ähnelt.
         /// </summary>
         internal static string _3m1m {
             get {
@@ -70,7 +70,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die 3 Mal, 5 Minuten ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die 3 x 5 Minuten ähnelt.
         /// </summary>
         internal static string _3m5m {
             get {
@@ -79,11 +79,29 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die LadeTestBericht ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Automatik ähnelt.
+        /// </summary>
+        internal static string auto {
+            get {
+                return ResourceManager.GetString("auto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ladetest-Protokoll ähnelt.
         /// </summary>
         internal static string bericht {
             get {
                 return ResourceManager.GetString("bericht", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die CDS Status ähnelt.
+        /// </summary>
+        internal static string cdsStatus {
+            get {
+                return ResourceManager.GetString("cdsStatus", resourceCulture);
             }
         }
         
@@ -142,6 +160,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Einstellungen ähnelt.
+        /// </summary>
+        internal static string einstellungen {
+            get {
+                return ResourceManager.GetString("einstellungen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Ergebnis ähnelt.
         /// </summary>
         internal static string ergebnis {
@@ -151,7 +178,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Alles Tests ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Gesamtergebnis:  ähnelt.
         /// </summary>
         internal static string m_alleTests {
             get {
@@ -169,7 +196,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ist bestanden ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die bestanden ähnelt.
         /// </summary>
         internal static string m_bestanden {
             get {
@@ -178,7 +205,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die ist nicht bestanden ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die nicht bestanden ähnelt.
         /// </summary>
         internal static string m_bestandenNicht {
             get {
@@ -187,16 +214,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die Verbindung mit dem CDS wurde verloren ähnelt.
-        /// </summary>
-        internal static string m_cdsConectionLost {
-            get {
-                return ResourceManager.GetString("m_cdsConectionLost", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Das Programm ist richtig mit dem CDS verbunden. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die CDS Verbindung ist getrennt ähnelt.
         /// </summary>
         internal static string m_cdsConnected {
             get {
@@ -205,7 +223,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die CDS ist im Fehler. Bitte beheben Sie den Fehler und versuchen nochmal. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Messequipment hat ein oder mehrere Fehler. Bitte beheben Sie die Fehler und versuchen es nochmal. ähnelt.
         /// </summary>
         internal static string m_CdsFehler {
             get {
@@ -223,7 +241,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die endet. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die ist beendet ähnelt.
         /// </summary>
         internal static string m_endet {
             get {
@@ -232,16 +250,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Error Flags lesen ähnelt.
-        /// </summary>
-        internal static string m_errorFlagsLesen {
-            get {
-                return ResourceManager.GetString("m_errorFlagsLesen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Wenn der Charger wieder grün ist, clicken Sie bitte auf JA ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wenn der Charger wieder Ladebereit ist, bestätigen Sie Bitte mit Ja. ähnelt.
         /// </summary>
         internal static string m_f_chargerGruen {
             get {
@@ -250,7 +259,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Sind Error FLags richtig? ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error Flags kontrollieren ähnelt.
         /// </summary>
         internal static string m_f_errorFlagsLesen {
             get {
@@ -259,16 +268,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Ist der Test bestanden? ähnelt.
-        /// </summary>
-        internal static string m_f_istBestanden {
-            get {
-                return ResourceManager.GetString("m_f_istBestanden", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Haben Sie die Ladepistole angestecket? ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Sind die Ladepistolen Richtig verbunden ähnelt.
         /// </summary>
         internal static string m_f_LadePistgesteckt {
             get {
@@ -277,7 +277,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte drücken Sie das Notausknopf ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte betätigen Sie jetzt den Not-Aus am Charger ähnelt.
         /// </summary>
         internal static string m_notausDruecken {
             get {
@@ -286,7 +286,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte normalizieren das Notausknopf. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte setzen Sie den Not-Aus am Charger zurück ähnelt.
         /// </summary>
         internal static string m_NotausNormailizieren {
             get {
@@ -295,7 +295,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die PDF wurde erfolgreich erstellt ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ladetest-Protokoll wurde erstellt ähnelt.
         /// </summary>
         internal static string m_PDFerstellt {
             get {
@@ -304,7 +304,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Die Erstellung des PDF-Bericht ist jetzt verfügbar.  ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ladetest-Protokoll kann erstellt werden ähnelt.
         /// </summary>
         internal static string m_PDverfugbar {
             get {
@@ -313,7 +313,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Speicher PDF als ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ladetest-Protokoll speichern unter ähnelt.
         /// </summary>
         internal static string m_SpeichernAlsPDF {
             get {
@@ -322,7 +322,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Starten ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die starten ähnelt.
         /// </summary>
         internal static string m_starten {
             get {
@@ -331,7 +331,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Der Test wurde gestopet ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Der Test wurde abgebrochen ähnelt.
         /// </summary>
         internal static string m_testStopt {
             get {
@@ -340,7 +340,7 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte machen Sie die Tür wieder zu. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte schließen Sie die Charger Tür ähnelt.
         /// </summary>
         internal static string m_tuerNormalisieren {
             get {
@@ -349,11 +349,29 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte öffnen Sie die Tür ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Bitte öffnen Sie jetzt die Charger Tür ähnelt.
         /// </summary>
         internal static string m_tuerOeffnen {
             get {
                 return ResourceManager.GetString("m_tuerOeffnen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Prüffeld ähnelt.
+        /// </summary>
+        internal static string menuPF {
+            get {
+                return ResourceManager.GetString("menuPF", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Prüffelder IP-Adresse ähnelt.
+        /// </summary>
+        internal static string menuPF_IP {
+            get {
+                return ResourceManager.GetString("menuPF_IP", resourceCulture);
             }
         }
         
@@ -376,6 +394,15 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Notaus ähnelt.
+        /// </summary>
+        internal static string notaus {
+            get {
+                return ResourceManager.GetString("notaus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Notaustest ähnelt.
         /// </summary>
         internal static string notAusTest {
@@ -385,11 +412,110 @@ namespace EoL_Automatik_Ladetest.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Prüffeld wählen ähnelt.
+        /// </summary>
+        internal static string pfWaehlen {
+            get {
+                return ResourceManager.GetString("pfWaehlen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Ladetest-Protokoll erstellen ähnelt.
+        /// </summary>
+        internal static string protokollErstellen {
+            get {
+                return ResourceManager.GetString("protokollErstellen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Zurücksetzen ähnelt.
+        /// </summary>
+        internal static string reset {
+            get {
+                return ResourceManager.GetString("reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Seriennummer ähnelt.
+        /// </summary>
+        internal static string serienNummer {
+            get {
+                return ResourceManager.GetString("serienNummer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die STARTEN ähnelt.
+        /// </summary>
+        internal static string starten {
+            get {
+                return ResourceManager.GetString("starten", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die STOPPEN ähnelt.
+        /// </summary>
+        internal static string stoppen {
+            get {
+                return ResourceManager.GetString("stoppen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Tests ähnelt.
+        /// </summary>
+        internal static string tests {
+            get {
+                return ResourceManager.GetString("tests", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Trennen ähnelt.
+        /// </summary>
+        internal static string trennen {
+            get {
+                return ResourceManager.GetString("trennen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Türkontakttest ähnelt.
         /// </summary>
         internal static string tuerKontaktTest {
             get {
                 return ResourceManager.GetString("tuerKontaktTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Verbinden ähnelt.
+        /// </summary>
+        internal static string verbinden {
+            get {
+                return ResourceManager.GetString("verbinden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Verbindungsstatus ähnelt.
+        /// </summary>
+        internal static string verbindungsStatus {
+            get {
+                return ResourceManager.GetString("verbindungsStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Wartung ähnelt.
+        /// </summary>
+        internal static string wartung {
+            get {
+                return ResourceManager.GetString("wartung", resourceCulture);
             }
         }
     }

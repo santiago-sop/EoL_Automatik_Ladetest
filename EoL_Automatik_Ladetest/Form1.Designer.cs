@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.cbPruffeld = new System.Windows.Forms.ComboBox();
             this.lblPruffeld = new System.Windows.Forms.Label();
             this.gbEinstellungen = new System.Windows.Forms.GroupBox();
@@ -231,7 +232,7 @@
             this.modeToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(826, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(701, 28);
             this.menuStrip1.TabIndex = 6;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -327,7 +328,7 @@
             this.gbCDS.Controls.Add(this.lblStatusVerbindung);
             this.gbCDS.Location = new System.Drawing.Point(426, 115);
             this.gbCDS.Name = "gbCDS";
-            this.gbCDS.Size = new System.Drawing.Size(200, 158);
+            this.gbCDS.Size = new System.Drawing.Size(200, 170);
             this.gbCDS.TabIndex = 9;
             this.gbCDS.TabStop = false;
             this.gbCDS.Text = "CDS";
@@ -335,7 +336,7 @@
             // lblCDSstatus
             // 
             this.lblCDSstatus.AutoSize = true;
-            this.lblCDSstatus.Location = new System.Drawing.Point(7, 121);
+            this.lblCDSstatus.Location = new System.Drawing.Point(7, 132);
             this.lblCDSstatus.Name = "lblCDSstatus";
             this.lblCDSstatus.Size = new System.Drawing.Size(75, 16);
             this.lblCDSstatus.TabIndex = 13;
@@ -343,9 +344,9 @@
             // 
             // btnCDSReset
             // 
-            this.btnCDSReset.Location = new System.Drawing.Point(10, 95);
+            this.btnCDSReset.Location = new System.Drawing.Point(10, 98);
             this.btnCDSReset.Name = "btnCDSReset";
-            this.btnCDSReset.Size = new System.Drawing.Size(100, 23);
+            this.btnCDSReset.Size = new System.Drawing.Size(115, 23);
             this.btnCDSReset.TabIndex = 12;
             this.btnCDSReset.Text = "Reset";
             this.btnCDSReset.UseVisualStyleBackColor = true;
@@ -353,9 +354,9 @@
             // 
             // btnCDSTrennen
             // 
-            this.btnCDSTrennen.Location = new System.Drawing.Point(10, 66);
+            this.btnCDSTrennen.Location = new System.Drawing.Point(10, 68);
             this.btnCDSTrennen.Name = "btnCDSTrennen";
-            this.btnCDSTrennen.Size = new System.Drawing.Size(100, 23);
+            this.btnCDSTrennen.Size = new System.Drawing.Size(115, 23);
             this.btnCDSTrennen.TabIndex = 11;
             this.btnCDSTrennen.Text = "Trennen";
             this.btnCDSTrennen.UseVisualStyleBackColor = true;
@@ -365,7 +366,7 @@
             // 
             this.btnCDSVerbinden.Location = new System.Drawing.Point(10, 37);
             this.btnCDSVerbinden.Name = "btnCDSVerbinden";
-            this.btnCDSVerbinden.Size = new System.Drawing.Size(100, 23);
+            this.btnCDSVerbinden.Size = new System.Drawing.Size(115, 23);
             this.btnCDSVerbinden.TabIndex = 10;
             this.btnCDSVerbinden.Text = "Verbinden";
             this.btnCDSVerbinden.UseVisualStyleBackColor = true;
@@ -422,7 +423,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.ClientSize = new System.Drawing.Size(826, 835);
+            this.ClientSize = new System.Drawing.Size(701, 844);
             this.Controls.Add(this.lblFA);
             this.Controls.Add(this.tbFA);
             this.Controls.Add(this.button1);
@@ -436,8 +437,11 @@
             this.Controls.Add(this.lblPruffeld);
             this.Controls.Add(this.cbPruffeld);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "EoL Ladetest durchführen";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
