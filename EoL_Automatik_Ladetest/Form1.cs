@@ -56,6 +56,8 @@ namespace EoL_Automatik_Ladetest
         {
             InitializeComponent();
 
+            Console.WriteLine("00 INICIO EL PROGRAMA");
+
             mode = true;
             Schritt = 3;
             
