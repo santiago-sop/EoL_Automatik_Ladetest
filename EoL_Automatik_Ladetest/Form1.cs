@@ -58,6 +58,8 @@ namespace EoL_Automatik_Ladetest
 
             Console.WriteLine("00 INICIO EL PROGRAMA");
 
+            Console.WriteLine("Ahora si vas a funcionar");
+
             mode = true;
             Schritt = 3;
             
