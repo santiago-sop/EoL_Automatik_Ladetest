@@ -1,7 +1,7 @@
 <?xml version="1.0.0" encoding="UTF-8"?>
 <item>
-  <version>1.0.0rc01</version>
-  <url>https://github.com/santiago-sop/EoL_Automatik_Ladetest/releases/download/v1.0.1rc01/EoL_Automatik_Ladetest.exe</url>
+  <version>1.0.0rc02</version>
+  <url>https://github.com/santiago-sop/EoL_Automatik_Ladetest/releases/download/v1.0.1rc02/EoL_Automatik_Ladetest.exe</url>
   <changelog>https://github.com/tu-usuario/tu-repositorio/releases</changelog>
   <mandatory>false</mandatory>
 </item>
